@@ -40,19 +40,33 @@
             font-size: 1.25rem;
             opacity: 0.85;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 auto 28px;
         }
+
+        .hero a {
+            display: inline-block;
+            background: #f5c518;
+            color: #1a0a0a;
+            font-weight: 600;
+            padding: 14px 36px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+
+        .hero a:hover { background: #d4a810; }
 
         .features {
             max-width: 900px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 40px 20px;
         }
 
         .features h2 {
             text-align: center;
             font-size: 1.75rem;
-            margin-bottom: 40px;
+            margin-bottom: 24px;
             color: #f5c518;
         }
 
@@ -80,24 +94,6 @@
             color: #c0b0b0;
         }
 
-        .cta {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .cta a {
-            display: inline-block;
-            background: #f5c518;
-            color: #1a0a0a;
-            font-weight: 600;
-            padding: 14px 36px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: background 0.2s;
-        }
-
-        .cta a:hover { background: #d4a810; }
 
         footer {
             text-align: center;
@@ -113,6 +109,7 @@
     <img src="oscar.jpeg" alt="Oscar Bot">
     <h1>Оскар | Всем кастинги</h1>
     <p>Сервис для актёров, который находит подходящие кастинги и доставляет их прямо в мессенджер</p>
+    <a href="https://max.ru/oscar_castings_bot">Написать боту в MAX</a>
 </section>
 
 <section class="features">
@@ -131,10 +128,6 @@
             <p>Получайте кастинги прямо в чат — с кнопками быстрого отклика для удобной работы</p>
         </div>
     </div>
-</section>
-
-<section class="cta">
-    <a href="https://max.ru/oscar_castings_bot">Написать боту в MAX</a>
 </section>
 
 <footer>
