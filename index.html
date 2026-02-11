@@ -9,22 +9,31 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: #1a1a2e;
-            background: #fafafa;
+            color: #f0e6e6;
+            background: #1a0a0a;
             line-height: 1.6;
         }
 
         .hero {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #fff;
-            padding: 80px 20px;
+            background: radial-gradient(ellipse at center, #5c0a0a 0%, #2a0505 60%, #1a0a0a 100%);
+            padding: 60px 20px 40px;
             text-align: center;
+        }
+
+        .hero img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 16px;
             letter-spacing: -0.5px;
+            color: #f5c518;
         }
 
         .hero p {
@@ -44,6 +53,7 @@
             text-align: center;
             font-size: 1.75rem;
             margin-bottom: 40px;
+            color: #f5c518;
         }
 
         .grid {
@@ -53,32 +63,33 @@
         }
 
         .card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(245, 197, 24, 0.15);
             border-radius: 12px;
             padding: 28px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
         .card h3 {
             font-size: 1.1rem;
             margin-bottom: 8px;
+            color: #f5c518;
         }
 
         .card p {
             font-size: 0.95rem;
-            color: #555;
+            color: #c0b0b0;
         }
 
         .cta {
             text-align: center;
             padding: 60px 20px;
-            background: #f0f0f5;
         }
 
         .cta a {
             display: inline-block;
-            background: #0f3460;
-            color: #fff;
+            background: #f5c518;
+            color: #1a0a0a;
+            font-weight: 600;
             padding: 14px 36px;
             border-radius: 8px;
             text-decoration: none;
@@ -86,19 +97,20 @@
             transition: background 0.2s;
         }
 
-        .cta a:hover { background: #1a1a2e; }
+        .cta a:hover { background: #d4a810; }
 
         footer {
             text-align: center;
             padding: 30px 20px;
             font-size: 0.85rem;
-            color: #999;
+            color: #665050;
         }
     </style>
 </head>
 <body>
 
 <section class="hero">
+    <img src="oscar.jpeg" alt="Oscar Bot">
     <h1>Oscar</h1>
     <p>Бот для актёров, который находит подходящие кастинги и доставляет их прямо в мессенджер</p>
 </section>
