@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Oscar — Профиль (mockup v2)</title>
+<style>
+:root {
+  color-scheme: dark;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #101215;
+  --card: #171b22;
+  --border: #2b3240;
+  --gold: #f0b43a;
+  --gold-dim: #f0b43a22;
+  --gold-text: #ffd87f;
+  --gold-border: #f0b43a55;
+  --text: #eceff4;
+  --text-secondary: #a7b0bf;
+  --text-muted: #8c97ad;
+  --text-dim: #7f8aa3;
+  --text-faint: #6b7486;
+  --text-label: #ced5e4;
+  --input-bg: #10141b;
+  --input-border: #333d50;
+  --red: #ef5d6f;
+  --red-dim: #ef5d6f22;
+  --green: #4caf6e;
+  --green-dim: rgba(76, 175, 110, 0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
+
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 20px 14px 36px;
+}
+
+/* ========== PAGE HEADER + TABS ========== */
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.tab-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: #1a1e27;
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: #2b3240;
+  color: var(--text);
+}
+
+/* ========== SECTION GROUPS ========== */
+
+.section-group {
+  margin-bottom: 18px;
+}
+
+.section-group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 0 2px;
+}
+
+.section-group-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold-text);
+}
+
+.section-group-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.section-group-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold-border), var(--border));
+}
+
+/* Section-level toggle (Больше точности master) */
+.section-group-header .toggle-switch {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.section-group-header .section-group-line {
+  order: 99;
+  flex-basis: 100%;
+  margin-top: 4px;
+}
+
+.section-group-header {
+  flex-wrap: wrap;
+}
+
+/* Disabled state for cards when master toggle is off */
+.dashboard-card.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+
+/* ========== DASHBOARD CARDS ========== */
+
+.dashboard-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: var(--card);
+  transition: border-color 0.2s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.dashboard-card.expanded { border-color: var(--gold-border); }
+
+.dashboard-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  gap: 8px;
+}
+
+.dashboard-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.dashboard-card-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.summary-chip {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: #1e2330;
+  border-radius: 6px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.dashboard-card-arrow {
+  color: var(--text-dim);
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-card.expanded .dashboard-card-arrow { transform: rotate(180deg); }
+
+.dashboard-card-body { padding: 4px 16px 16px; }
+
+
+/* ========== FORM ELEMENTS ========== */
+
+.onboarding-section { margin-bottom: 20px; }
+
+.section-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.hint-inline { color: var(--text-dim); font-weight: 400; font-size: 12px; }
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: #edf2ff;
+  padding: 0 10px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+input:focus { border-color: var(--gold); }
+
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-label);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-text); }
+.chip.excluded { border-color: var(--red); background: var(--red-dim); color: #ff8a97; }
+
+.gender-pill-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.gender-pill {
+  height: 44px;
+  border: 1px solid var(--input-border);
+  border-radius: 999px;
+  background: var(--input-bg);
+  color: var(--text-label);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gender-pill.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-text); }
+
+.toggle-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  color: var(--text-label);
+}
+
+.toggle-switch {
+  display: inline-block;
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: var(--input-border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch.on { background: var(--gold); }
+
+.toggle-switch-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.toggle-switch.on .toggle-switch-slider { transform: translateX(20px); }
+
+/* Per-field filter toggles (smaller, inline with label) */
+.filter-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.filter-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--input-border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+.filter-toggle.on { background: var(--gold); }
+.filter-toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+.filter-toggle.on .filter-toggle-slider { transform: translateX(16px); }
+.filter-field-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.summary-chip.badge-off {
+  background: var(--input-border);
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.age-range-inputs { display: flex; align-items: center; gap: 8px; }
+.age-range-inputs input { flex: 1; }
+.age-range-dash { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
+
+.accordion-card { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-label);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.accordion-right { display: flex; align-items: center; gap: 8px; }
+
+.accordion-badge {
+  background: var(--gold);
+  color: #17120a;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 2px 7px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.accordion-badge.exclusion-badge { background: var(--red); color: #fff; }
+.accordion-body { padding: 4px 14px 14px; }
+
+.fee-presets-grid { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; }
+.fee-preset-card { display: flex; align-items: baseline; gap: 6px; }
+.fee-preset-title { color: #5a6478; font-size: 13px; }
+.fee-preset-range { color: #5a6478; font-size: 13px; }
+
+.radio-card-group { display: flex; flex-direction: column; gap: 8px; }
+
+.radio-card {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text-label);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.radio-card.active { border-color: var(--gold); background: #f0b43a15; color: #ffe3ac; }
+
+.save-button {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: var(--gold);
+  color: #17120a;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.dashboard-save-row { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+.dashboard-save-row .save-button { flex: 1; }
+
+.dashboard-section-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+.dashboard-section-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+}
+
+.skill-group { margin-bottom: 12px; }
+
+.input-with-icon { position: relative; }
+.input-with-icon .input-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+.input-with-icon input { padding-left: 34px; }
+
+.dropdown-trigger {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--text-label);
+  padding: 0 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.dropdown-trigger .arrow { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; }
+.dropdown-trigger.open .arrow { transform: rotate(180deg); }
+.dropdown-trigger.has-value { border-color: var(--gold-border); }
+
+.dropdown-wrap { position: relative; }
+.dropdown-panel {
+  display: none;
+  margin-top: 4px;
+  background: #1e2330;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.dropdown-panel.open { display: block; }
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-label);
+  transition: background 0.15s;
+}
+.dropdown-option:hover { background: #2b3240; }
+.dropdown-option.selected { background: var(--gold-dim); color: var(--gold-text); }
+.dropdown-option .check {
+  width: 18px; height: 18px;
+  border: 2px solid var(--input-border);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.dropdown-option.selected .check {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.dropdown-option.selected .check::after {
+  content: '✓';
+  font-size: 11px;
+  color: #101215;
+  font-weight: 700;
+}
+
+.selected-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.selected-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold-text);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.selected-tag .tag-x {
+  cursor: pointer;
+  opacity: 0.7;
+  font-size: 11px;
+}
+.selected-tag .tag-x:hover { opacity: 1; }
+
+.city-dropdown { position: relative; }
+.city-dropdown-trigger {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: #edf2ff;
+  font-size: 14px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.city-dropdown-icon { color: var(--text-dim); font-size: 12px; }
+.city-dropdown-arrow { margin-left: auto; color: var(--text-dim); font-size: 12px; }
+
+.stopword-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.stopword-action { border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-label); border-radius: 8px; height: 32px; padding: 0 10px; font-size: 13px; cursor: pointer; }
+.stopword-action.secondary { border-style: dashed; }
+.stopword-group { margin-top: 8px; }
+.stopword-group-title { display: block; margin: 0 0 6px; color: var(--text-muted); font-size: 12px; }
+
+/* Subscription card */
+.subscription-card {
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 16px;
+  background: #1e2535;
+  border: 1px solid var(--border);
+}
+
+.subscription-card.active { border-color: #2e7d4f; background: #162b1e; }
+
+.subscription-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.subscription-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.subscription-dot.green { background: var(--green); }
+
+.subscription-days-left {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--green);
+  background: var(--green-dim);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.subscription-detail { margin-top: 4px; font-size: 13px; color: #8a9bb0; }
+
+.subscription-manage-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 9px 0;
+  border-radius: 8px;
+  border: 1px solid #3a4a60;
+  background: transparent;
+  color: #7eb8f7;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Tab content visibility */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Quick Response block */
+.quick-response {
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.quick-response-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-text);
+  margin-bottom: 12px;
+}
+
+.qr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.qr-chip {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qr-chip.active {
+  background: var(--gold-dim);
+  border-color: var(--gold-border);
+  color: var(--gold-text);
+}
+
+.qr-preview {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  min-height: 60px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-line;
+  margin-bottom: 12px;
+}
+
+.qr-preview-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.qr-copy-btn {
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: 1px solid var(--gold-border);
+  background: var(--gold-dim);
+  color: var(--gold-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qr-copy-btn:active {
+  background: var(--gold);
+  color: #1a1e27;
+}
+
+.qr-copy-btn.copied {
+  border-color: #2e7d4f;
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <h1 class="page-title">Мой профиль</h1>
+
+  <!-- ========== TAB BAR ========== -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-search" onclick="switchTab('search')">Настройки поиска</button>
+    <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">О себе</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1: Настройки поиска                                      -->
+  <!-- ============================================================ -->
+  <div class="tab-content active" id="content-search">
+
+    <!-- Section: Больше кастингов -->
+    <div class="section-group">
+      <div class="section-group-header">
+        <span class="section-group-title">Больше кастингов</span>
+        <span class="section-group-subtitle">базовые фильтры</span>
+        <span class="section-group-line"></span>
+      </div>
+    <!-- Card 1 — Основная информация -->
+    <div class="dashboard-card" id="card-1">
+      <button class="dashboard-card-header" onclick="toggleCard(1)">
+        <div class="dashboard-card-left">
+          <span>Основная информация</span>
+          <div class="dashboard-card-summary" id="summary-1">
+            <span class="summary-chip">Ж</span>
+            <span class="summary-chip">23–31 игр.</span>
+            <span class="summary-chip">Москва и МО</span>
+            <span class="summary-chip">СПб</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-1" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Пол</label>
+          <div class="gender-pill-row">
+            <button class="gender-pill" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Мужской</button>
+            <button class="gender-pill active" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Женский</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Игровой возраст</label>
+          <div class="age-range-inputs">
+            <input type="number" value="23">
+            <span class="age-range-dash">&mdash;</span>
+            <input type="number" value="31">
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Город поиска</label>
+          <div class="chip-row">
+            <button class="chip active" onclick="this.classList.toggle('active')">Москва и МО</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Санкт-Петербург</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Екатеринбург</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Казань</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Новосибирск</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Нижний Новгород</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Краснодар</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Сочи</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Ростов-на-Дону</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Минск</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Все города</button>
+          </div>
+          <input type="text" style="margin-top:8px" placeholder="Введите город и нажмите Enter">
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Card 2 — Какие кастинги -->
+    <div class="dashboard-card" id="card-2">
+      <button class="dashboard-card-header" onclick="toggleCard(2)">
+        <div class="dashboard-card-left">
+          <span>Какие кастинги</span>
+          <div class="dashboard-card-summary" id="summary-2">
+            <span class="summary-chip">12 типов</span>
+            <span class="summary-chip">5 ролей</span>
+            <span class="summary-chip">от 3 000&#8381;</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-2" style="display:none">
+        <span class="dashboard-section-title">Что показывать</span>
+        <div class="onboarding-section">
+          <label class="section-label">Типы проектов</label>
+          <div class="accordion-card">
+            <button class="accordion-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+              <span>Кино и сериалы</span>
+              <span class="accordion-right"><span class="accordion-badge">4</span><span class="city-dropdown-arrow">&#x25BE;</span></span>
+            </button>
+            <div class="accordion-body" style="display:none">
+              <div class="chip-row">
+                <button class="chip active" onclick="this.classList.toggle('active')">Сериал</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Полный метр</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Короткий метр</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Документальный</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Студенческий</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Реконструкция</button>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-card">
+            <button class="accordion-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+              <span>Реклама</span>
+              <span class="accordion-right"><span class="accordion-badge">3</span><span class="city-dropdown-arrow">&#x25BE;</span></span>
+            </button>
+            <div class="accordion-body" style="display:none">
+              <div class="chip-row">
+                <button class="chip active" onclick="this.classList.toggle('active')">Реклама</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Промо</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Рилс / контент</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Примерка</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Корп. видео</button>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-card">
+            <button class="accordion-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+              <span>Модельные проекты</span>
+              <span class="accordion-right"><span class="accordion-badge">3</span><span class="city-dropdown-arrow">&#x25BE;</span></span>
+            </button>
+            <div class="accordion-body" style="display:none">
+              <div class="chip-row">
+                <button class="chip active" onclick="this.classList.toggle('active')">Фотосессия</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Выставка</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Подиум-показ</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Каталог</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Бельевая</button>
+                <button class="chip" onclick="this.classList.toggle('active')">ТФП</button>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-card">
+            <button class="accordion-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+              <span>Шоу и интернет</span>
+              <span class="accordion-right"><span class="accordion-badge">2</span><span class="city-dropdown-arrow">&#x25BE;</span></span>
+            </button>
+            <div class="accordion-body" style="display:none">
+              <div class="chip-row">
+                <button class="chip active" onclick="this.classList.toggle('active')">Шоу / реалити</button>
+                <button class="chip active" onclick="this.classList.toggle('active')">Клип</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Передача о здоровье</button>
+                <button class="chip" onclick="this.classList.toggle('active')">Скетч</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <label class="section-label">Типы ролей</label>
+          <div class="chip-row">
+            <button class="chip active" onclick="this.classList.toggle('active')">Главная</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Второстепенная</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Эпизод</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Массовка</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Групповка</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Дублер</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Модель</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Фотомодель</button>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <label class="section-label">Минимальная ставка (&#8381;)</label>
+          <input type="number" value="3000">
+          <div class="fee-presets-grid">
+            <div class="fee-preset-card"><span class="fee-preset-title">Массовка:</span><span class="fee-preset-range">1 500–3 000 &#8381;</span></div>
+            <div class="fee-preset-card"><span class="fee-preset-title">Групповка:</span><span class="fee-preset-range">3 000–7 000 &#8381;</span></div>
+            <div class="fee-preset-card"><span class="fee-preset-title">Эпизод:</span><span class="fee-preset-range">7 000–30 000 &#8381;</span></div>
+            <div class="fee-preset-card"><span class="fee-preset-title">Реклама:</span><span class="fee-preset-range">25 000–400 000 &#8381;</span></div>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <div class="toggle-switch-row"><span>Оплата по договоренности</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
+        </div>
+        <div class="onboarding-section">
+          <div class="toggle-switch-row"><span>Некоммерческие проекты</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
+        </div>
+        <div class="onboarding-section">
+          <div class="toggle-switch-row"><span>Агентские проекты</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
+        </div>
+
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    </div><!-- /section-group: Больше кастингов -->
+
+    <!-- Section: Больше точности -->
+    <div class="section-group" id="precision-group">
+      <div class="section-group-header">
+        <span class="section-group-title">Больше точности</span>
+        <span class="section-group-subtitle">продвинутые фильтры</span>
+        <button class="toggle-switch on" id="precision-master" onclick="togglePrecisionMaster()"><span class="toggle-switch-slider"></span></button>
+        <span class="section-group-line"></span>
+      </div>
+    <!-- Card 3 — Внешность и параметры -->
+    <div class="dashboard-card precision-card" id="card-3">
+      <button class="dashboard-card-header" onclick="toggleCard(3)">
+        <div class="dashboard-card-left">
+          <span>Внешность и параметры</span>
+          <div class="dashboard-card-summary" id="summary-3">
+            <span class="summary-chip">168 см</span>
+            <span class="summary-chip">Европейский</span>
+            <span class="summary-chip">Стройное</span>
+            <span class="summary-chip">Блонд</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-3" style="display:none">
+        <div class="onboarding-section">
+          <div class="row">
+            <div id="field-height" style="flex:1">
+              <div class="filter-toggle-row">
+                <label class="section-label" style="margin-bottom:0">Рост (см)</label>
+                <button class="filter-toggle on" onclick="toggleFieldFilter('height')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+              </div>
+              <div class="filter-field-content" id="field-content-height">
+                <input type="number" value="168">
+              </div>
+            </div>
+            <div id="field-clothing_size" style="flex:1">
+              <div class="filter-toggle-row">
+                <label class="section-label" style="margin-bottom:0">Размер одежды</label>
+                <button class="filter-toggle on" onclick="toggleFieldFilter('clothing_size')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+              </div>
+              <div class="filter-field-content" id="field-content-clothing_size">
+                <input type="number" value="44">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="onboarding-section" id="field-ethnicity">
+          <div class="filter-toggle-row">
+            <label class="section-label" style="margin-bottom:0">Этнос <span class="hint-inline">(можно несколько)</span></label>
+            <button class="filter-toggle on" onclick="toggleFieldFilter('ethnicity')"><span class="filter-toggle-slider"></span></button>
+          </div>
+          <div class="filter-field-content" id="field-content-ethnicity">
+            <div class="dropdown-wrap" id="dd-ethnicity">
+              <button class="dropdown-trigger has-value" onclick="toggleDropdown('ethnicity')"><span id="dd-label-ethnicity">Европейский</span><span class="arrow">&#x25BE;</span></button>
+              <div class="dropdown-panel" id="dd-panel-ethnicity"></div>
+              <div class="selected-tags" id="dd-tags-ethnicity"></div>
+            </div>
+          </div>
+        </div>
+        <div class="onboarding-section" id="field-body_type">
+          <div class="filter-toggle-row">
+            <label class="section-label" style="margin-bottom:0">Телосложение <span class="hint-inline">(можно несколько)</span></label>
+            <button class="filter-toggle on" onclick="toggleFieldFilter('body_type')"><span class="filter-toggle-slider"></span></button>
+          </div>
+          <div class="filter-field-content" id="field-content-body_type">
+            <div class="dropdown-wrap" id="dd-body_type">
+              <button class="dropdown-trigger has-value" onclick="toggleDropdown('body_type')"><span id="dd-label-body_type">Обычное</span><span class="arrow">&#x25BE;</span></button>
+              <div class="dropdown-panel" id="dd-panel-body_type"></div>
+              <div class="selected-tags" id="dd-tags-body_type"></div>
+            </div>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Волосы</label>
+          <div class="row">
+            <div id="field-hair_color">
+              <div class="filter-toggle-row">
+                <label class="section-label" style="font-size:12px;margin-bottom:0">Цвет <span class="hint-inline">(несколько)</span></label>
+                <button class="filter-toggle on" onclick="toggleFieldFilter('hair_color')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+              </div>
+              <div class="filter-field-content" id="field-content-hair_color">
+                <div class="dropdown-wrap" id="dd-hair_color">
+                  <button class="dropdown-trigger has-value" onclick="toggleDropdown('hair_color')"><span id="dd-label-hair_color">Блонд</span><span class="arrow">&#x25BE;</span></button>
+                  <div class="dropdown-panel" id="dd-panel-hair_color"></div>
+                  <div class="selected-tags" id="dd-tags-hair_color"></div>
+                </div>
+              </div>
+            </div>
+            <div id="field-hair_length">
+              <div class="filter-toggle-row">
+                <label class="section-label" style="font-size:12px;margin-bottom:0">Длина <span class="hint-inline">(несколько)</span></label>
+                <button class="filter-toggle on" onclick="toggleFieldFilter('hair_length')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+              </div>
+              <div class="filter-field-content" id="field-content-hair_length">
+                <div class="dropdown-wrap" id="dd-hair_length">
+                  <button class="dropdown-trigger has-value" onclick="toggleDropdown('hair_length')"><span id="dd-label-hair_length">Длинные</span><span class="arrow">&#x25BE;</span></button>
+                  <div class="dropdown-panel" id="dd-panel-hair_length"></div>
+                  <div class="selected-tags" id="dd-tags-hair_length"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Card 4 — Опыт и образование -->
+    <div class="dashboard-card precision-card" id="card-4">
+      <button class="dashboard-card-header" onclick="toggleCard(4)">
+        <div class="dashboard-card-left">
+          <span>Опыт и образование</span>
+          <div class="dashboard-card-summary" id="summary-4">
+            <span class="summary-chip">Есть опыт</span>
+            <span class="summary-chip">Курсы</span>
+            <span class="summary-chip">Школа Филинкова</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-4" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Опыт в съемках</label>
+          <div class="gender-pill-row">
+            <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
+            <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Пока нет</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Актёрское образование</label>
+          <div class="radio-card-group">
+            <button class="radio-card" onclick="selectRadio(this)">Нет</button>
+            <button class="radio-card active" onclick="selectRadio(this)">Курсы</button>
+            <button class="radio-card" onclick="selectRadio(this)">ВУЗ + Курсы</button>
+            <button class="radio-card" onclick="selectRadio(this)">Профильный ВУЗ</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Детали образования</label>
+          <input type="text" value="Школа Филинкова" placeholder="Название курсов / ВУЗа">
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Card 5 — Исключения (стоп-слова) -->
+    <div class="dashboard-card precision-card" id="card-5">
+      <button class="dashboard-card-header" onclick="toggleCard(5)">
+        <div class="dashboard-card-left">
+          <span>Исключения</span>
+          <div class="dashboard-card-summary" id="summary-5">
+            <span class="summary-chip">2 стоп-слов</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-5" style="display:none">
+        <div class="stopword-toolbar"><button class="stopword-action secondary">Сбросить</button></div>
+        <div class="stopword-group">
+          <small class="stopword-group-title">Возраст</small>
+          <div class="chip-row">
+            <button class="chip" onclick="this.classList.toggle('excluded')">Дети</button>
+            <button class="chip excluded" onclick="this.classList.toggle('excluded')">Подростки</button>
+          </div>
+        </div>
+        <div class="stopword-group">
+          <small class="stopword-group-title">Специфичные</small>
+          <div class="chip-row">
+            <button class="chip excluded" onclick="this.classList.toggle('excluded')">Обнаженка 18+</button>
+            <button class="chip" onclick="this.classList.toggle('excluded')">Интим</button>
+            <button class="chip" onclick="this.classList.toggle('excluded')">Спреинг</button>
+          </div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    </div><!-- /section-group: Больше точности -->
+
+  </div><!-- /content-search -->
+
+
+  <!-- ============================================================ -->
+  <!-- TAB 2: О себе                                                 -->
+  <!-- ============================================================ -->
+  <div class="tab-content" id="content-profile">
+
+    <!-- Card 6 — Основная информация -->
+    <div class="dashboard-card" id="card-6">
+      <button class="dashboard-card-header" onclick="toggleCard(6)">
+        <div class="dashboard-card-left">
+          <span>Основная информация</span>
+          <div class="dashboard-card-summary" id="summary-6">
+            <span class="summary-chip">Мария Иванова</span>
+            <span class="summary-chip">27 лет</span>
+            <span class="summary-chip">Москва</span>
+            <span class="summary-chip">Самозанятый</span>
+            <span class="summary-chip">Голубой</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-6" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">ФИО</label>
+          <input type="text" value="Иванова Мария Петровна">
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Фактический возраст</label>
+          <input type="number" value="27">
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Город проживания</label>
+          <div class="city-dropdown">
+            <button class="city-dropdown-trigger">
+              <span class="city-dropdown-icon">&#x25C9;</span>
+              <span>Москва</span>
+              <span class="city-dropdown-arrow">&#x25BE;</span>
+            </button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <div class="toggle-switch-row">
+            <span>Готов к командировкам</span>
+            <button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Налоговый статус</label>
+          <div class="chip-row">
+            <button class="chip active" onclick="this.classList.toggle('active')">Самозанятый</button>
+            <button class="chip" onclick="this.classList.toggle('active')">ИП</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Физлицо</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Цвет глаз</label>
+          <button class="dropdown-trigger"><span>Голубой</span><span class="arrow">&#x25BE;</span></button>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Размер обуви</label>
+          <input type="number" value="38" placeholder="20–55">
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Приметы</label>
+          <div class="chip-row">
+            <button class="chip" onclick="this.classList.toggle('active')">Татуировки</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Пирсинг</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Шрамы</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Веснушки</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Брекеты</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Навыки</label>
+          <div class="skill-group">
+            <label class="section-label" style="font-size:12px">&#x1F3AD; Актерские</label>
+            <div class="chip-row">
+              <button class="chip active" onclick="this.classList.toggle('active')">Импровизация</button>
+              <button class="chip" onclick="this.classList.toggle('active')">Стендап</button>
+              <button class="chip active" onclick="this.classList.toggle('active')">Пластика</button>
+            </div>
+          </div>
+          <div class="skill-group">
+            <label class="section-label" style="font-size:12px">&#x1F30D; Языки</label>
+            <div class="chip-row">
+              <button class="chip active" onclick="this.classList.toggle('active')">Английский</button>
+              <button class="chip active" onclick="this.classList.toggle('active')">Французский</button>
+              <button class="chip" onclick="this.classList.toggle('active')">Немецкий</button>
+            </div>
+            <input type="text" style="margin-top:8px" placeholder="Другие языки через запятую">
+          </div>
+          <div class="skill-group">
+            <label class="section-label" style="font-size:12px">&#x1F698; Вождение</label>
+            <div class="chip-row">
+              <button class="chip" onclick="this.classList.toggle('active')">Категория B</button>
+              <button class="chip" onclick="this.classList.toggle('active')">Мотоцикл</button>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Card 7 — Контакты и материалы -->
+    <div class="dashboard-card" id="card-7">
+      <button class="dashboard-card-header" onclick="toggleCard(7)">
+        <div class="dashboard-card-left">
+          <span>Контакты и материалы</span>
+          <div class="dashboard-card-summary" id="summary-7">
+            <span class="summary-chip">+7 900 ***</span>
+            <span class="summary-chip">maria@email.com</span>
+            <span class="summary-chip">Portfolio</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-7" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Ссылка на портфолио</label>
+          <div class="input-with-icon"><span class="input-icon">&#x1F517;</span><input type="text" value="filmtoolz.com/maria-ivanova"></div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Ссылка на видеовизитку</label>
+          <div class="input-with-icon"><span class="input-icon">&#x1F3AC;</span><input type="text" placeholder="YouTube, Vimeo"></div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Телефон</label>
+          <div class="input-with-icon"><span class="input-icon">&#x1F4DE;</span><input type="text" value="+7 900 123 45 67"></div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">VK</label>
+          <div class="input-with-icon"><span class="input-icon">&#x1F4AC;</span><input type="text" placeholder="vk.com/username"></div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Email</label>
+          <div class="input-with-icon"><span class="input-icon">&#x2709;&#xFE0F;</span><input type="text" value="maria@email.com"></div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Quick Response block -->
+    <div class="quick-response" id="quick-response">
+      <div class="quick-response-title">Быстрый отклик</div>
+      <div class="qr-chips">
+        <button class="qr-chip active" data-cat="basics" onclick="toggleQrChip(this)">Основные</button>
+        <button class="qr-chip" data-cat="params" onclick="toggleQrChip(this)">Параметры</button>
+        <button class="qr-chip active" data-cat="contacts" onclick="toggleQrChip(this)">Контакты</button>
+        <button class="qr-chip" data-cat="materials" onclick="toggleQrChip(this)">Материалы</button>
+        <button class="qr-chip" data-cat="experience" onclick="toggleQrChip(this)">Опыт</button>
+      </div>
+      <div class="qr-preview" id="qr-preview"></div>
+      <button class="qr-copy-btn" id="qr-copy-btn" onclick="copyQuickResponse()">Копировать</button>
+    </div>
+
+  </div><!-- /content-profile -->
+
+
+  <!-- ============================================================ -->
+  <!-- SUBSCRIPTION (visible on search tab only)                    -->
+  <!-- ============================================================ -->
+  <div class="subscription-card active" id="subscription-block">
+    <div class="subscription-status">
+      <span class="subscription-dot green"></span>
+      <span>Подписка активна</span>
+      <span class="subscription-days-left">18 дней</span>
+    </div>
+    <div class="subscription-detail">до 9 июня 2026 &middot; автопродление</div>
+    <button class="subscription-manage-btn">Управление подпиской</button>
+  </div>
+
+</main>
+
+<script>
+let expandedCard = null;
+let currentTab = 'search';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-search').classList.toggle('active', tab === 'search');
+  document.getElementById('tab-profile').classList.toggle('active', tab === 'profile');
+  document.getElementById('content-search').classList.toggle('active', tab === 'search');
+  document.getElementById('content-profile').classList.toggle('active', tab === 'profile');
+
+  // Hide subscription on "О себе", show on "Настройки поиска"
+  const subBlock = document.getElementById('subscription-block');
+  if (subBlock) subBlock.style.display = (tab === 'search') ? '' : 'none';
+
+  // Collapse any expanded card when switching tabs
+  if (expandedCard !== null) {
+    const body = document.getElementById('body-' + expandedCard);
+    const card = document.getElementById('card-' + expandedCard);
+    const summary = document.getElementById('summary-' + expandedCard);
+    if (body) body.style.display = 'none';
+    if (card) card.classList.remove('expanded');
+    if (summary) summary.style.display = '';
+    expandedCard = null;
+  }
+
+  // Rebuild quick response preview when switching to profile tab
+  if (tab === 'profile') updateQrPreview();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleCard(num) {
+  const card = document.getElementById('card-' + num);
+
+  const body = document.getElementById('body-' + num);
+  const summary = document.getElementById('summary-' + num);
+
+  if (expandedCard === num) {
+    body.style.display = 'none';
+    card.classList.remove('expanded');
+    if (summary) summary.style.display = '';
+    expandedCard = null;
+  } else {
+    if (expandedCard !== null) {
+      const prevBody = document.getElementById('body-' + expandedCard);
+      const prevCard = document.getElementById('card-' + expandedCard);
+      const prevSummary = document.getElementById('summary-' + expandedCard);
+      if (prevBody) prevBody.style.display = 'none';
+      if (prevCard) prevCard.classList.remove('expanded');
+      if (prevSummary) prevSummary.style.display = '';
+    }
+    body.style.display = 'block';
+    card.classList.add('expanded');
+    if (summary) summary.style.display = 'none';
+    expandedCard = num;
+  }
+}
+
+function selectRadio(el) {
+  el.parentElement.querySelectorAll('.radio-card').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleFieldFilter(key) {
+  const section = document.getElementById('field-' + key);
+  const toggle = section.querySelector('.filter-toggle');
+  const content = document.getElementById('field-content-' + key);
+  toggle.classList.toggle('on');
+  if (toggle.classList.contains('on')) {
+    content.classList.remove('filter-field-disabled');
+  } else {
+    content.classList.add('filter-field-disabled');
+  }
+}
+
+function togglePrecisionMaster() {
+  const master = document.getElementById('precision-master');
+  master.classList.toggle('on');
+  const isOn = master.classList.contains('on');
+  document.querySelectorAll('.precision-card').forEach(card => {
+    if (isOn) {
+      card.classList.remove('disabled');
+    } else {
+      card.classList.add('disabled');
+      if (card.classList.contains('expanded')) {
+        const num = card.id.replace('card-', '');
+        const body = document.getElementById('body-' + num);
+        const summary = document.getElementById('summary-' + num);
+        if (body) body.style.display = 'none';
+        card.classList.remove('expanded');
+        if (summary) summary.style.display = '';
+        if (expandedCard == num) expandedCard = null;
+      }
+    }
+  });
+}
+
+// ========== MULTI-SELECT DROPDOWNS ==========
+
+const dropdownConfigs = {
+  ethnicity: {
+    options: ['Славянский','Европейский','Кавказский','Восточный','Азиатский','Среднеазиатский','Южноазиатский','Татарский','Еврейский','Африканский','Латино','Средиземноморский','Цыганский','Неславянский','Другое'],
+    selected: new Set(['Европейский'])
+  },
+  body_type: {
+    options: ['Обычное','Спортивное','Атлетическое','Худощавое','Полное','Крупное'],
+    selected: new Set(['Обычное'])
+  },
+  hair_color: {
+    options: ['Блонд','Русый','Шатен','Брюнет','Рыжий','Седой'],
+    selected: new Set(['Блонд'])
+  },
+  hair_length: {
+    options: ['Длинные','Средние','Короткие','Лысый'],
+    selected: new Set(['Длинные'])
+  }
+};
+
+let openDropdownId = null;
+
+function toggleDropdown(id) {
+  if (openDropdownId === id) {
+    closeDropdown(id);
+  } else {
+    if (openDropdownId) closeDropdown(openDropdownId);
+    openDropdown(id);
+  }
+}
+
+function openDropdown(id) {
+  const panel = document.getElementById('dd-panel-' + id);
+  const trigger = panel.previousElementSibling;
+  const cfg = dropdownConfigs[id];
+
+  panel.innerHTML = '';
+  cfg.options.forEach(opt => {
+    const div = document.createElement('div');
+    div.className = 'dropdown-option' + (cfg.selected.has(opt) ? ' selected' : '');
+    div.innerHTML = '<span class="check"></span><span>' + opt + '</span>';
+    div.onclick = (e) => { e.stopPropagation(); toggleOption(id, opt); };
+    panel.appendChild(div);
+  });
+
+  panel.classList.add('open');
+  trigger.classList.add('open');
+  openDropdownId = id;
+}
+
+function closeDropdown(id) {
+  const panel = document.getElementById('dd-panel-' + id);
+  const trigger = panel.previousElementSibling;
+  panel.classList.remove('open');
+  trigger.classList.remove('open');
+  openDropdownId = null;
+}
+
+function toggleOption(id, opt) {
+  const cfg = dropdownConfigs[id];
+  if (cfg.selected.has(opt)) {
+    cfg.selected.delete(opt);
+  } else {
+    cfg.selected.add(opt);
+  }
+  renderDropdownState(id);
+  openDropdown(id);
+}
+
+function resetDropdown(id) {
+  dropdownConfigs[id].selected.clear();
+  renderDropdownState(id);
+  closeDropdown(id);
+}
+
+function removeTag(id, opt) {
+  dropdownConfigs[id].selected.delete(opt);
+  renderDropdownState(id);
+  if (openDropdownId === id) openDropdown(id);
+}
+
+function renderDropdownState(id) {
+  const cfg = dropdownConfigs[id];
+  const label = document.getElementById('dd-label-' + id);
+  const trigger = label.parentElement;
+  const tagsEl = document.getElementById('dd-tags-' + id);
+
+  if (cfg.selected.size === 0) {
+    label.textContent = 'Выбрать...';
+    trigger.classList.remove('has-value');
+  } else if (cfg.selected.size === 1) {
+    label.textContent = [...cfg.selected][0];
+    trigger.classList.add('has-value');
+  } else {
+    label.textContent = [...cfg.selected][0] + ' +' + (cfg.selected.size - 1);
+    trigger.classList.add('has-value');
+  }
+
+  tagsEl.innerHTML = '';
+  if (cfg.selected.size > 1) {
+    cfg.selected.forEach(opt => {
+      const tag = document.createElement('span');
+      tag.className = 'selected-tag';
+      tag.innerHTML = opt + ' <span class="tag-x" onclick="removeTag(\'' + id + '\',\'' + opt + '\')">×</span>';
+      tagsEl.appendChild(tag);
+    });
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (openDropdownId && !e.target.closest('.dropdown-wrap')) {
+    closeDropdown(openDropdownId);
+  }
+});
+
+// Initialize tag display on load
+Object.keys(dropdownConfigs).forEach(id => renderDropdownState(id));
+
+// ========== QUICK RESPONSE ==========
+
+const mockProfile = {
+  full_name: 'Иванова Мария Петровна',
+  gender: 'Ж',
+  age: 27,
+  city: 'Москва',
+  height: 168,
+  clothing_size: 44,
+  ethnicity: ['Славянский', 'Европейский'],
+  body_type: ['Обычное'],
+  phone: '+7 900 123 45 67',
+  email: 'maria@email.com',
+  vk: '',
+  portfolio_url: 'filmtoolz.com/maria-ivanova',
+  video_portfolio_url: '',
+  professional_resource_url: '',
+  education: 'courses',
+  education_details: 'Курсы Дмитрия Брусникина',
+  skills: { acting: ['Импровизация', 'Пластика'], languages: ['Английский', 'Французский'] }
+};
+
+const educationLabels = { none: '', courses: 'Курсы', higher_and_courses: 'ВУЗ + Курсы', higher: 'Профильный ВУЗ' };
+
+function buildQrText() {
+  const active = new Set();
+  document.querySelectorAll('.qr-chip.active').forEach(c => active.add(c.dataset.cat));
+  const lines = [];
+
+  if (active.has('basics')) {
+    const parts = [];
+    if (mockProfile.full_name) parts.push(mockProfile.full_name);
+    if (mockProfile.age) parts.push(mockProfile.age + ' лет');
+    if (parts.length) lines.push(parts.join(', '));
+    const line2 = [];
+    if (mockProfile.gender) line2.push(mockProfile.gender);
+    if (mockProfile.city) line2.push('г. ' + mockProfile.city);
+    if (line2.length) lines.push(line2.join(', '));
+  }
+
+  if (active.has('params')) {
+    const p = [];
+    if (mockProfile.height) p.push(mockProfile.height + ' см');
+    if (mockProfile.clothing_size) p.push(mockProfile.clothing_size + ' размер');
+    if (p.length) lines.push(p.join(', '));
+    if (mockProfile.ethnicity && mockProfile.ethnicity.length) lines.push(mockProfile.ethnicity.join(', '));
+    if (mockProfile.body_type && mockProfile.body_type.length) {
+      const bt = mockProfile.body_type.map(b => b.toLowerCase()).join(', ');
+      lines.push(bt + ' телосложение');
+    }
+  }
+
+  if (active.has('contacts')) {
+    if (mockProfile.phone) lines.push(mockProfile.phone);
+    if (mockProfile.email) lines.push(mockProfile.email);
+    if (mockProfile.vk) lines.push(mockProfile.vk);
+  }
+
+  if (active.has('materials')) {
+    if (mockProfile.portfolio_url) lines.push(mockProfile.portfolio_url);
+    if (mockProfile.video_portfolio_url) lines.push(mockProfile.video_portfolio_url);
+    if (mockProfile.professional_resource_url) lines.push(mockProfile.professional_resource_url);
+  }
+
+  if (active.has('experience')) {
+    const edu = educationLabels[mockProfile.education];
+    if (edu) {
+      const detail = mockProfile.education_details ? ' — ' + mockProfile.education_details : '';
+      lines.push('Образование: ' + edu + detail);
+    }
+    const allSkills = [];
+    if (mockProfile.skills) {
+      Object.values(mockProfile.skills).forEach(arr => allSkills.push(...arr));
+    }
+    if (allSkills.length) lines.push('Навыки: ' + allSkills.join(', '));
+  }
+
+  return lines.join('\n');
+}
+
+function updateQrPreview() {
+  const preview = document.getElementById('qr-preview');
+  const text = buildQrText();
+  if (text) {
+    preview.textContent = text;
+    preview.classList.remove('qr-preview-empty');
+  } else {
+    preview.textContent = 'Выберите категории выше';
+    preview.classList.add('qr-preview-empty');
+  }
+}
+
+function toggleQrChip(el) {
+  el.classList.toggle('active');
+  updateQrPreview();
+}
+
+function copyQuickResponse() {
+  const text = buildQrText();
+  if (!text) return;
+  const btn = document.getElementById('qr-copy-btn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Копировать';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+updateQrPreview();
+
+</script>
+
+</body>
+</html>
