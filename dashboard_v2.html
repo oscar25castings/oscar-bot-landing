@@ -1004,10 +1004,6 @@ input:focus { border-color: var(--gold); }
         <div class="onboarding-section">
           <div class="toggle-switch-row"><span>Некоммерческие проекты</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
         </div>
-        <div class="onboarding-section">
-          <div class="toggle-switch-row"><span>Агентские проекты</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
-        </div>
-
         <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
       </div>
     </div>
@@ -1129,39 +1125,43 @@ input:focus { border-color: var(--gold); }
       </div>
     </div>
 
-    <!-- Card 4 — Опыт и образование -->
+
+    <!-- Card 4 — Агент и квалификация -->
     <div class="dashboard-card precision-card" id="card-4">
       <button class="dashboard-card-header" onclick="toggleCard(4)">
         <div class="dashboard-card-left">
-          <span>Опыт и образование</span>
+          <span>Агент и квалификация</span>
           <div class="dashboard-card-summary" id="summary-4">
-            <span class="summary-chip">Есть опыт</span>
-            <span class="summary-chip">Курсы</span>
-            <span class="summary-chip">Школа Филинкова</span>
+            <span class="summary-chip">Агентские: да</span>
+            <span class="summary-chip">Проф.актёр: да</span>
           </div>
         </div>
         <span class="dashboard-card-arrow">&#x25BE;</span>
       </button>
       <div class="dashboard-card-body" id="body-4" style="display:none">
-        <div class="onboarding-section">
-          <label class="section-label">Опыт в съемках</label>
-          <div class="gender-pill-row">
-            <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
-            <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Пока нет</button>
+        <div class="onboarding-section" id="field-show_agent_projects">
+          <div class="filter-toggle-row">
+            <label class="section-label" style="margin-bottom:0">Агентские проекты</label>
+            <button class="filter-toggle on" onclick="toggleFieldFilter('show_agent_projects')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+          </div>
+          <div class="filter-field-content" id="field-content-show_agent_projects">
+            <div class="gender-pill-row">
+              <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
+              <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Нет</button>
+            </div>
           </div>
         </div>
-        <div class="onboarding-section">
-          <label class="section-label">Актёрское образование</label>
-          <div class="radio-card-group">
-            <button class="radio-card" onclick="selectRadio(this)">Нет</button>
-            <button class="radio-card active" onclick="selectRadio(this)">Курсы</button>
-            <button class="radio-card" onclick="selectRadio(this)">ВУЗ + Курсы</button>
-            <button class="radio-card" onclick="selectRadio(this)">Профильный ВУЗ</button>
+        <div class="onboarding-section" id="field-allow_prof_actor">
+          <div class="filter-toggle-row">
+            <label class="section-label" style="margin-bottom:0">Кастинги для проф. актёров</label>
+            <button class="filter-toggle on" onclick="toggleFieldFilter('allow_prof_actor')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
           </div>
-        </div>
-        <div class="onboarding-section">
-          <label class="section-label">Детали образования</label>
-          <input type="text" value="Школа Филинкова" placeholder="Название курсов / ВУЗа">
+          <div class="filter-field-content" id="field-content-allow_prof_actor">
+            <div class="gender-pill-row">
+              <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
+              <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Нет</button>
+            </div>
+          </div>
         </div>
         <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
       </div>
@@ -1179,7 +1179,7 @@ input:focus { border-color: var(--gold); }
         <span class="dashboard-card-arrow">&#x25BE;</span>
       </button>
       <div class="dashboard-card-body" id="body-5" style="display:none">
-        <div class="stopword-toolbar"><button class="stopword-action secondary">Сбросить</button></div>
+        <div class="stopword-toolbar"><button class="stopword-action secondary" onclick="this.closest('.dashboard-card-body').querySelectorAll('.chip.excluded').forEach(c=>c.classList.remove('excluded'))">Сбросить</button></div>
         <div class="stopword-group">
           <small class="stopword-group-title">Возраст</small>
           <div class="chip-row">
@@ -1219,7 +1219,7 @@ input:focus { border-color: var(--gold); }
             <span class="summary-chip">27 лет</span>
             <span class="summary-chip">Москва</span>
             <span class="summary-chip">Самозанятый</span>
-            <span class="summary-chip">Голубой</span>
+            <span class="summary-chip">Голубые</span>
           </div>
         </div>
         <span class="dashboard-card-arrow">&#x25BE;</span>
@@ -1297,6 +1297,44 @@ input:focus { border-color: var(--gold); }
               <button class="chip" onclick="this.classList.toggle('active')">Мотоцикл</button>
             </div>
           </div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Card 8 — Опыт и образование -->
+    <div class="dashboard-card" id="card-8">
+      <button class="dashboard-card-header" onclick="toggleCard(8)">
+        <div class="dashboard-card-left">
+          <span>Опыт и образование</span>
+          <div class="dashboard-card-summary" id="summary-8">
+            <span class="summary-chip">Есть опыт</span>
+            <span class="summary-chip">Курсы</span>
+            <span class="summary-chip">Школа Филинкова</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-8" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Опыт в съемках</label>
+          <div class="gender-pill-row">
+            <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
+            <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Пока нет</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Актёрское образование</label>
+          <div class="radio-card-group">
+            <button class="radio-card" onclick="selectRadio(this)">Нет</button>
+            <button class="radio-card active" onclick="selectRadio(this)">Курсы</button>
+            <button class="radio-card" onclick="selectRadio(this)">ВУЗ + Курсы</button>
+            <button class="radio-card" onclick="selectRadio(this)">Профильный ВУЗ</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Детали образования</label>
+          <input type="text" value="Школа Филинкова" placeholder="Название курсов / ВУЗа">
         </div>
         <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
       </div>
@@ -1644,10 +1682,6 @@ const qrFieldDefs = [
   { key: 'hair', label: 'Волосы', category: 'params' },
   { key: 'ethnicity', label: 'Этнос', category: 'params' },
   { key: 'body_type', label: 'Телосложение', category: 'params' },
-  // Материалы — sorted by freq (38→20%)
-  { key: 'portfolio_url', label: 'Портфолио', category: 'materials' },
-  { key: 'video_portfolio_url', label: 'Видеовизитка', category: 'materials' },
-  { key: 'professional_resource_url', label: 'Проф. ресурс', category: 'materials' },
   // Основные — remaining (15→9→3%)
   { key: 'tax_status', label: 'Налоговый статус', category: 'basics' },
   { key: 'marks', label: 'Приметы', category: 'basics' },
@@ -1658,6 +1692,10 @@ const qrFieldDefs = [
   { key: 'skills', label: 'Навыки', category: 'experience' },
   // Контакты — remaining
   { key: 'vk', label: 'VK', category: 'contacts' },
+  // Материалы — sorted by freq (38→20%)
+  { key: 'portfolio_url', label: 'Портфолио', category: 'materials' },
+  { key: 'video_portfolio_url', label: 'Видеовизитка', category: 'materials' },
+  { key: 'professional_resource_url', label: 'Проф. ресурс', category: 'materials' },
 ];
 
 const defaultEnabledFields = ['full_name', 'age', 'gender', 'city', 'phone', 'email'];
@@ -1811,7 +1849,7 @@ function renderQrFieldList() {
   }
 
   // Full field list — all fields always shown, selected highlighted
-  const categoryOrder = ['basics', 'contacts', 'params', 'materials', 'experience'];
+  const categoryOrder = ['basics', 'contacts', 'params', 'experience', 'materials'];
   const categoryLabels = {
     params: 'Параметры',
     materials: 'Материалы',
