@@ -592,49 +592,190 @@ input:focus { border-color: var(--gold); }
   border: 1px solid var(--border);
 }
 
+.quick-response-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .quick-response-title {
   font-size: 15px;
   font-weight: 700;
   color: var(--gold-text);
-  margin-bottom: 12px;
 }
 
-.qr-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
+.qr-gear-btn {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s ease, transform 0.3s ease;
 }
+.qr-gear-btn:hover { opacity: 0.8; }
+.qr-gear-btn.active { opacity: 1; color: var(--gold-text); transform: rotate(90deg); }
+
+
+/* Selected chips (draggable) */
+.qr-selected-chips {
+  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.qr-selected-chips.expanded { display: flex; }
+.qr-selected-chips:empty { display: none; }
 
 .qr-chip {
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--border);
+  color: var(--text);
+  font-size: 12px;
   font-weight: 500;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+.qr-chip .chip-handle {
+  color: var(--text-dim);
+  font-size: 11px;
+  margin-right: 2px;
+}
+.qr-chip .chip-remove {
+  color: var(--text-dim);
+  font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  margin-left: 2px;
+  padding: 0 2px;
+  border: none;
+  background: none;
+  line-height: 1;
+}
+.qr-chip .chip-remove:hover { color: var(--red); }
+.qr-chip.dragging { opacity: 0.5; background: var(--gold-dim); }
+.qr-chip.drag-over { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+/* Section label for "Все поля" */
+.qr-section-label {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 4px 6px;
+  list-style: none;
 }
 
-.qr-chip.active {
-  background: var(--gold-dim);
-  border-color: var(--gold-border);
-  color: var(--gold-text);
+/* Full field list (always shows all fields) */
+.qr-field-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: none;
+}
+.qr-field-list.expanded { display: block; }
+
+
+.qr-field-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.qr-field-item:last-child { border-bottom: none; }
+.qr-field-item:hover { background: rgba(255,255,255,0.03); }
+.qr-field-item.selected { background: var(--border); }
+.qr-group-label {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 4px 2px;
+  list-style: none;
+}
+
+.qr-field-check {
+  width: 16px;
+  font-size: 13px;
+  color: var(--gold);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.qr-field-label {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-secondary);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qr-field-value {
+  font-size: 12px;
+  color: var(--text-dim);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Free text (single line, inside settings) */
+.qr-free-text-wrap {
+  margin-bottom: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.qr-settings-only { display: none; }
+.qr-settings-only.expanded { display: block; }
+.qr-free-text-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.qr-free-text {
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.qr-free-text:focus { border-color: var(--gold); }
+.qr-free-text::placeholder { color: var(--text-dim); }
+
+/* Preview */
+.qr-preview-wrap {
+  position: relative;
+  margin-bottom: 4px;
 }
 
 .qr-preview {
   background: var(--input-bg);
   border: 1px solid var(--input-border);
   border-radius: 8px;
-  padding: 12px 14px;
-  min-height: 60px;
+  padding: 8px 14px;
+  min-height: 40px;
   font-size: 14px;
   line-height: 1.5;
   color: var(--text);
   white-space: pre-line;
-  margin-bottom: 12px;
 }
 
 .qr-preview-empty {
@@ -642,28 +783,39 @@ input:focus { border-color: var(--gold); }
   font-style: italic;
 }
 
-.qr-copy-btn {
-  width: 100%;
-  padding: 10px 0;
-  border-radius: 8px;
-  border: 1px solid var(--gold-border);
-  background: var(--gold-dim);
-  color: var(--gold-text);
-  font-size: 14px;
-  font-weight: 600;
+/* Copy icon (top-right corner of preview) */
+.qr-copy-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
+  opacity: 0.3;
 }
 
-.qr-copy-btn:active {
-  background: var(--gold);
-  color: #1a1e27;
+.qr-copy-icon:hover {
+  opacity: 0.7;
+  background: var(--input-border);
 }
 
-.qr-copy-btn.copied {
-  border-color: #2e7d4f;
-  background: var(--green-dim);
+.qr-copy-icon:active {
+  opacity: 1;
+  color: var(--gold-text);
+}
+
+.qr-copy-icon.copied {
   color: var(--green);
+  opacity: 1;
 }
 
 </style>
@@ -672,8 +824,6 @@ input:focus { border-color: var(--gold); }
 
 <main class="container">
 
-  <h1 class="page-title">Мой профиль</h1>
-
   <!-- ========== TAB BAR ========== -->
   <div class="tab-bar">
     <button class="tab-btn active" id="tab-search" onclick="switchTab('search')">Настройки поиска</button>
@@ -681,7 +831,7 @@ input:focus { border-color: var(--gold); }
   </div>
 
   <!-- ============================================================ -->
-  <!-- TAB 1: Настройки поиска                                      -->
+  <!-- TAB 1: Настройки поиска                                       -->
   <!-- ============================================================ -->
   <div class="tab-content active" id="content-search">
 
@@ -887,17 +1037,17 @@ input:focus { border-color: var(--gold); }
         <span class="dashboard-card-arrow">&#x25BE;</span>
       </button>
       <div class="dashboard-card-body" id="body-3" style="display:none">
+        <div class="onboarding-section" id="field-height">
+          <div class="filter-toggle-row">
+            <label class="section-label" style="margin-bottom:0">Рост (см)</label>
+            <button class="filter-toggle on" onclick="toggleFieldFilter('height')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+          </div>
+          <div class="filter-field-content" id="field-content-height">
+            <input type="number" value="168">
+          </div>
+        </div>
         <div class="onboarding-section">
           <div class="row">
-            <div id="field-height" style="flex:1">
-              <div class="filter-toggle-row">
-                <label class="section-label" style="margin-bottom:0">Рост (см)</label>
-                <button class="filter-toggle on" onclick="toggleFieldFilter('height')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
-              </div>
-              <div class="filter-field-content" id="field-content-height">
-                <input type="number" value="168">
-              </div>
-            </div>
             <div id="field-clothing_size" style="flex:1">
               <div class="filter-toggle-row">
                 <label class="section-label" style="margin-bottom:0">Размер одежды</label>
@@ -905,6 +1055,15 @@ input:focus { border-color: var(--gold); }
               </div>
               <div class="filter-field-content" id="field-content-clothing_size">
                 <input type="number" value="44">
+              </div>
+            </div>
+            <div id="field-shoe_size" style="flex:1">
+              <div class="filter-toggle-row">
+                <label class="section-label" style="margin-bottom:0">Размер обуви</label>
+                <button class="filter-toggle on" onclick="toggleFieldFilter('shoe_size')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
+              </div>
+              <div class="filter-field-content" id="field-content-shoe_size">
+                <input type="number" value="38">
               </div>
             </div>
           </div>
@@ -1103,10 +1262,6 @@ input:focus { border-color: var(--gold); }
           <button class="dropdown-trigger"><span>Голубой</span><span class="arrow">&#x25BE;</span></button>
         </div>
         <div class="onboarding-section">
-          <label class="section-label">Размер обуви</label>
-          <input type="number" value="38" placeholder="20–55">
-        </div>
-        <div class="onboarding-section">
           <label class="section-label">Приметы</label>
           <div class="chip-row">
             <button class="chip" onclick="this.classList.toggle('active')">Татуировки</button>
@@ -1187,16 +1342,23 @@ input:focus { border-color: var(--gold); }
 
     <!-- Quick Response block -->
     <div class="quick-response" id="quick-response">
-      <div class="quick-response-title">Быстрый отклик</div>
-      <div class="qr-chips">
-        <button class="qr-chip active" data-cat="basics" onclick="toggleQrChip(this)">Основные</button>
-        <button class="qr-chip" data-cat="params" onclick="toggleQrChip(this)">Параметры</button>
-        <button class="qr-chip active" data-cat="contacts" onclick="toggleQrChip(this)">Контакты</button>
-        <button class="qr-chip" data-cat="materials" onclick="toggleQrChip(this)">Материалы</button>
-        <button class="qr-chip" data-cat="experience" onclick="toggleQrChip(this)">Опыт</button>
+      <div class="quick-response-header">
+        <div class="quick-response-title">Быстрый отклик</div>
+        <button class="qr-gear-btn" id="qr-expand-bar" onclick="toggleQrFieldList()" title="Настроить поля">⚙</button>
       </div>
-      <div class="qr-preview" id="qr-preview"></div>
-      <button class="qr-copy-btn" id="qr-copy-btn" onclick="copyQuickResponse()">Копировать</button>
+
+      <ul class="qr-field-list" id="qr-field-list"></ul>
+      <div class="qr-selected-chips" id="qr-selected-chips"></div>
+
+      <div class="qr-preview-wrap">
+        <div class="qr-preview" id="qr-preview"><span class="qr-preview-text" id="qr-preview-text"></span></div>
+        <button class="qr-copy-icon" id="qr-copy-icon" onclick="copyQuickResponse()" title="Копировать">📋</button>
+      </div>
+
+      <div class="qr-free-text-wrap" id="qr-free-text-wrap">
+        <div class="qr-free-text-label">Дополнительно</div>
+        <input type="text" class="qr-free-text" id="qr-free-text" placeholder="Свободна с 1 по 15 июня, есть авто..." oninput="onFreeTextChange()">
+      </div>
     </div>
 
   </div><!-- /content-profile -->
@@ -1228,11 +1390,11 @@ function switchTab(tab) {
   document.getElementById('content-search').classList.toggle('active', tab === 'search');
   document.getElementById('content-profile').classList.toggle('active', tab === 'profile');
 
-  // Hide subscription on "О себе", show on "Настройки поиска"
+  // Show subscription on search tab, hide on "О себе"
   const subBlock = document.getElementById('subscription-block');
   if (subBlock) subBlock.style.display = (tab === 'search') ? '' : 'none';
 
-  // Collapse any expanded card when switching tabs
+  // Collapse any expanded card
   if (expandedCard !== null) {
     const body = document.getElementById('body-' + expandedCard);
     const card = document.getElementById('card-' + expandedCard);
@@ -1243,9 +1405,7 @@ function switchTab(tab) {
     expandedCard = null;
   }
 
-  // Rebuild quick response preview when switching to profile tab
-  if (tab === 'profile') updateQrPreview();
-
+  if (tab === 'profile') { renderQrFieldList(); updateQrPreview(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1441,110 +1601,413 @@ const mockProfile = {
   gender: 'Ж',
   age: 27,
   city: 'Москва',
+  tax_status: 'Самозанятая',
+  eye_color: 'Карие',
+  marks: ['Веснушки'],
+  ready_for_trips: true,
   height: 168,
   clothing_size: 44,
+  shoe_size: 38,
   ethnicity: ['Славянский', 'Европейский'],
   body_type: ['Обычное'],
+  hair_color: ['Блонд'],
+  hair_length: ['Длинные'],
   phone: '+7 900 123 45 67',
   email: 'maria@email.com',
-  vk: '',
+  vk: 'vk.com/maria_ivanova',
   portfolio_url: 'filmtoolz.com/maria-ivanova',
   video_portfolio_url: '',
   professional_resource_url: '',
   education: 'courses',
   education_details: 'Курсы Дмитрия Брусникина',
-  skills: { acting: ['Импровизация', 'Пластика'], languages: ['Английский', 'Французский'] }
+  experience: 'yes',
+  skills: { sport: ['Плавание'], languages: ['Английский', 'Французский'] }
 };
 
+const qrFieldDefs = [
+  // Default-enabled (identity + contacts)
+  { key: 'full_name', label: 'ФИО', category: 'basics' },
+  { key: 'age', label: 'Возраст', category: 'basics' },
+  { key: 'gender', label: 'Пол', category: 'basics' },
+  { key: 'city', label: 'Город', category: 'basics' },
+  { key: 'ready_for_trips', label: 'Командировки', category: 'basics' },
+  { key: 'phone', label: 'Телефон', category: 'contacts' },
+  { key: 'email', label: 'Email', category: 'contacts' },
+  // Параметры — sorted by freq (62→47→24→13%)
+  { key: 'height', label: 'Рост', category: 'params' },
+  { key: 'clothing_size', label: 'Размер одежды', category: 'params' },
+  { key: 'shoe_size', label: 'Размер обуви', category: 'params' },
+  { key: 'hair', label: 'Волосы', category: 'params' },
+  { key: 'ethnicity', label: 'Этнос', category: 'params' },
+  { key: 'body_type', label: 'Телосложение', category: 'params' },
+  // Материалы — sorted by freq (38→20%)
+  { key: 'portfolio_url', label: 'Портфолио', category: 'materials' },
+  { key: 'video_portfolio_url', label: 'Видеовизитка', category: 'materials' },
+  { key: 'professional_resource_url', label: 'Проф. ресурс', category: 'materials' },
+  // Основные — remaining (15→9→3%)
+  { key: 'tax_status', label: 'Налоговый статус', category: 'basics' },
+  { key: 'marks', label: 'Приметы', category: 'basics' },
+  { key: 'eye_color', label: 'Цвет глаз', category: 'basics' },
+  // Опыт — sorted by freq (9→8%)
+  { key: 'experience', label: 'Опыт съёмок', category: 'experience' },
+  { key: 'education', label: 'Образование', category: 'experience' },
+  { key: 'skills', label: 'Навыки', category: 'experience' },
+  // Контакты — remaining
+  { key: 'vk', label: 'VK', category: 'contacts' },
+];
+
+const defaultEnabledFields = ['full_name', 'age', 'gender', 'city', 'phone', 'email'];
 const educationLabels = { none: '', courses: 'Курсы', higher_and_courses: 'ВУЗ + Курсы', higher: 'Профильный ВУЗ' };
 
+let qrFieldOrder = [];
+let qrEnabledFields = new Set();
+let qrFreeText = '';
+let qrFieldsExpanded = false;
+
+function loadQrConfig() {
+  // Production: loaded from users.quick_response_config (jsonb) via /api/v1/tma/filters
+  // Mockup: simulates server-side persistence via localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem('quick_response_config'));
+    if (saved) {
+      qrFieldOrder = saved.order || [...defaultEnabledFields];
+      qrEnabledFields = new Set(saved.enabled || defaultEnabledFields);
+      qrFreeText = saved.freeText || '';
+    } else {
+      resetQrDefaults();
+    }
+  } catch(e) { resetQrDefaults(); }
+}
+
+function resetQrDefaults() {
+  qrFieldOrder = [...defaultEnabledFields];
+  qrEnabledFields = new Set(defaultEnabledFields);
+  qrFreeText = '';
+  qrFieldsExpanded = false;
+}
+
+function saveQrConfig() {
+  // Production: sent as quick_response_config in PUT /api/v1/tma/filters
+  // Mockup: simulates via localStorage
+  localStorage.setItem('quick_response_config', JSON.stringify({
+    order: qrFieldOrder,
+    enabled: [...qrEnabledFields],
+    freeText: qrFreeText
+  }));
+}
+
+function getFieldValue(key) {
+  const p = mockProfile;
+  switch(key) {
+    case 'full_name': return p.full_name || '';
+    case 'age': return p.age ? p.age + ' лет' : '';
+    case 'gender': return p.gender === 'М' ? 'Мужской' : p.gender === 'Ж' ? 'Женский' : '';
+    case 'city': return p.city ? 'г. ' + p.city : '';
+    case 'tax_status': return p.tax_status || '';
+    case 'eye_color': return p.eye_color || '';
+    case 'marks': return (p.marks && p.marks.length) ? p.marks.join(', ') : '';
+    case 'ready_for_trips': return p.ready_for_trips ? 'да' : 'нет';
+    case 'height': return p.height ? p.height + ' см' : '';
+    case 'clothing_size': return p.clothing_size ? String(p.clothing_size) : '';
+    case 'shoe_size': return p.shoe_size ? String(p.shoe_size) : '';
+    case 'ethnicity': return (p.ethnicity && p.ethnicity.length) ? p.ethnicity.join(', ') : '';
+    case 'body_type': return (p.body_type && p.body_type.length) ? p.body_type.join(', ') : '';
+    case 'hair':
+      const parts = [];
+      if (p.hair_color && p.hair_color.length) parts.push(p.hair_color.join(', '));
+      if (p.hair_length && p.hair_length.length) parts.push(p.hair_length.join(', '));
+      return parts.join(', ');
+    case 'phone': return p.phone || '';
+    case 'email': return p.email || '';
+    case 'vk': return p.vk || '';
+    case 'portfolio_url': return p.portfolio_url || '';
+    case 'video_portfolio_url': return p.video_portfolio_url || '';
+    case 'professional_resource_url': return p.professional_resource_url || '';
+    case 'education':
+      const label = educationLabels[p.education];
+      if (!label) return '';
+      return label + (p.education_details ? ' — ' + p.education_details : '');
+    case 'experience': return p.experience === 'yes' ? 'есть' : p.experience === 'no' ? 'пока нет' : '';
+    case 'skills':
+      if (!p.skills) return '';
+      const groups = [];
+      Object.entries(p.skills).forEach(([g, arr]) => {
+        if (arr.length) groups.push(arr.join(', '));
+      });
+      return groups.join('; ');
+    default: return '';
+  }
+}
+
+function getFieldDisplayLine(key) {
+  const val = getFieldValue(key);
+  if (!val) return '';
+  const noPrefix = ['full_name', 'age', 'gender', 'city', 'tax_status'];
+  if (noPrefix.includes(key)) return val;
+  const def = qrFieldDefs.find(f => f.key === key);
+  return (def ? def.label : key) + ': ' + val;
+}
+
 function buildQrText() {
-  const active = new Set();
-  document.querySelectorAll('.qr-chip.active').forEach(c => active.add(c.dataset.cat));
   const lines = [];
+  let prevKey = null;
 
-  if (active.has('basics')) {
-    const parts = [];
-    if (mockProfile.full_name) parts.push(mockProfile.full_name);
-    if (mockProfile.age) parts.push(mockProfile.age + ' лет');
-    if (parts.length) lines.push(parts.join(', '));
-    const line2 = [];
-    if (mockProfile.gender) line2.push(mockProfile.gender);
-    if (mockProfile.city) line2.push('г. ' + mockProfile.city);
-    if (line2.length) lines.push(line2.join(', '));
-  }
+  for (const key of qrFieldOrder) {
+    if (!qrEnabledFields.has(key)) continue;
+    const val = getFieldValue(key);
+    if (!val) continue;
 
-  if (active.has('params')) {
-    const p = [];
-    if (mockProfile.height) p.push(mockProfile.height + ' см');
-    if (mockProfile.clothing_size) p.push(mockProfile.clothing_size + ' размер');
-    if (p.length) lines.push(p.join(', '));
-    if (mockProfile.ethnicity && mockProfile.ethnicity.length) lines.push(mockProfile.ethnicity.join(', '));
-    if (mockProfile.body_type && mockProfile.body_type.length) {
-      const bt = mockProfile.body_type.map(b => b.toLowerCase()).join(', ');
-      lines.push(bt + ' телосложение');
+    // Special: merge full_name + age on one line
+    if (key === 'full_name' && qrEnabledFields.has('age') && getFieldValue('age')) {
+      lines.push(val + ', ' + getFieldValue('age'));
+      prevKey = 'full_name+age';
+      continue;
     }
+    if (key === 'age' && qrEnabledFields.has('full_name') && getFieldValue('full_name')) { continue; }
+
+    lines.push(getFieldDisplayLine(key));
+    prevKey = key;
   }
 
-  if (active.has('contacts')) {
-    if (mockProfile.phone) lines.push(mockProfile.phone);
-    if (mockProfile.email) lines.push(mockProfile.email);
-    if (mockProfile.vk) lines.push(mockProfile.vk);
-  }
-
-  if (active.has('materials')) {
-    if (mockProfile.portfolio_url) lines.push(mockProfile.portfolio_url);
-    if (mockProfile.video_portfolio_url) lines.push(mockProfile.video_portfolio_url);
-    if (mockProfile.professional_resource_url) lines.push(mockProfile.professional_resource_url);
-  }
-
-  if (active.has('experience')) {
-    const edu = educationLabels[mockProfile.education];
-    if (edu) {
-      const detail = mockProfile.education_details ? ' — ' + mockProfile.education_details : '';
-      lines.push('Образование: ' + edu + detail);
-    }
-    const allSkills = [];
-    if (mockProfile.skills) {
-      Object.values(mockProfile.skills).forEach(arr => allSkills.push(...arr));
-    }
-    if (allSkills.length) lines.push('Навыки: ' + allSkills.join(', '));
+  if (qrFreeText.trim()) {
+    lines.push('');
+    lines.push(qrFreeText.trim());
   }
 
   return lines.join('\n');
 }
 
-function updateQrPreview() {
-  const preview = document.getElementById('qr-preview');
-  const text = buildQrText();
-  if (text) {
-    preview.textContent = text;
-    preview.classList.remove('qr-preview-empty');
-  } else {
-    preview.textContent = 'Выберите категории выше';
-    preview.classList.add('qr-preview-empty');
+function renderQrFieldList() {
+  const chipsContainer = document.getElementById('qr-selected-chips');
+  const list = document.getElementById('qr-field-list');
+  chipsContainer.innerHTML = '';
+  list.innerHTML = '';
+  chipsContainer.classList.toggle('expanded', qrFieldsExpanded);
+  list.classList.toggle('expanded', qrFieldsExpanded);
+
+  // Selected chips (draggable, in user order)
+  for (const key of qrFieldOrder) {
+    if (!qrEnabledFields.has(key)) continue;
+    const def = qrFieldDefs.find(f => f.key === key);
+    if (!def) continue;
+
+    const chip = document.createElement('span');
+    chip.className = 'qr-chip';
+    chip.dataset.key = key;
+    chip.draggable = true;
+    chip.innerHTML = `<span class="chip-handle">≡</span>${def.label}<button class="chip-remove" onclick="event.stopPropagation(); toggleQrField('${key}')">×</button>`;
+
+    chip.addEventListener('dragstart', onChipDragStart);
+    chip.addEventListener('dragover', onChipDragOver);
+    chip.addEventListener('dragend', onChipDragEnd);
+    chip.addEventListener('drop', onChipDrop);
+    chip.addEventListener('touchstart', onChipTouchStart, { passive: false });
+
+    chipsContainer.appendChild(chip);
+  }
+
+  // Full field list — all fields always shown, selected highlighted
+  const categoryOrder = ['basics', 'contacts', 'params', 'materials', 'experience'];
+  const categoryLabels = {
+    params: 'Параметры',
+    materials: 'Материалы',
+    basics: 'Основные',
+    experience: 'Опыт',
+    contacts: 'Контакты'
+  };
+
+  for (const cat of categoryOrder) {
+    const fields = qrFieldDefs.filter(f => f.category === cat);
+    if (!fields.length) continue;
+
+    const groupLabel = document.createElement('li');
+    groupLabel.className = 'qr-group-label';
+    groupLabel.textContent = categoryLabels[cat] || cat;
+    list.appendChild(groupLabel);
+
+    for (const def of fields) {
+      const isSelected = qrEnabledFields.has(def.key);
+      const val = getFieldValue(def.key);
+      const li = document.createElement('li');
+      li.className = 'qr-field-item' + (isSelected ? ' selected' : '');
+      li.dataset.key = def.key;
+      li.onclick = () => toggleQrField(def.key);
+
+      li.innerHTML = `
+        <span class="qr-field-check">${isSelected ? '✓' : ''}</span>
+        <span class="qr-field-label">${def.label}</span>
+        <span class="qr-field-value">${val ? val.substring(0, 20) : ''}</span>
+      `;
+
+      list.appendChild(li);
+    }
   }
 }
 
-function toggleQrChip(el) {
-  el.classList.toggle('active');
+function toggleQrFieldList() {
+  qrFieldsExpanded = !qrFieldsExpanded;
+  const bar = document.getElementById('qr-expand-bar');
+  bar.classList.toggle('active', qrFieldsExpanded);
+  document.getElementById('qr-selected-chips').classList.toggle('expanded', qrFieldsExpanded);
+  document.getElementById('qr-free-text-wrap').classList.toggle('expanded', qrFieldsExpanded);
+  saveQrConfig();
+  renderQrFieldList();
+}
+
+function toggleQrField(key) {
+  if (qrEnabledFields.has(key)) {
+    qrEnabledFields.delete(key);
+    qrFieldOrder = qrFieldOrder.filter(k => k !== key);
+  } else {
+    qrEnabledFields.add(key);
+    qrFieldOrder.push(key);
+  }
+  saveQrConfig();
+  renderQrFieldList();
   updateQrPreview();
+}
+
+
+function onFreeTextChange() {
+  qrFreeText = document.getElementById('qr-free-text').value;
+  saveQrConfig();
+  updateQrPreview();
+}
+
+// Chip drag & drop (desktop)
+let draggedKey = null;
+
+function onChipDragStart(e) {
+  draggedKey = e.currentTarget.dataset.key;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onChipDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const target = e.currentTarget;
+  document.querySelectorAll('.qr-chip.drag-over').forEach(el => el.classList.remove('drag-over'));
+  if (target.dataset.key !== draggedKey) target.classList.add('drag-over');
+}
+
+function onChipDrop(e) {
+  e.preventDefault();
+  const targetKey = e.currentTarget.dataset.key;
+  if (draggedKey && targetKey && draggedKey !== targetKey) {
+    const fromIdx = qrFieldOrder.indexOf(draggedKey);
+    const toIdx = qrFieldOrder.indexOf(targetKey);
+    qrFieldOrder.splice(fromIdx, 1);
+    qrFieldOrder.splice(toIdx, 0, draggedKey);
+    saveQrConfig();
+    renderQrFieldList();
+    updateQrPreview();
+  }
+}
+
+function onChipDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.qr-chip.drag-over').forEach(el => el.classList.remove('drag-over'));
+  draggedKey = null;
+}
+
+// Chip touch drag (mobile)
+let touchDragEl = null;
+let touchCurrentChip = null;
+
+function onChipTouchStart(e) {
+  e.preventDefault();
+  const chip = e.target.closest('.qr-chip');
+  if (!chip) return;
+  touchDragEl = chip;
+  chip.classList.add('dragging');
+  draggedKey = chip.dataset.key;
+
+  document.addEventListener('touchmove', onChipTouchMove, { passive: false });
+  document.addEventListener('touchend', onChipTouchEnd);
+}
+
+function onChipTouchMove(e) {
+  e.preventDefault();
+  const x = e.touches[0].clientX;
+  const y = e.touches[0].clientY;
+  document.querySelectorAll('.qr-chip').forEach(chip => {
+    chip.classList.remove('drag-over');
+    const rect = chip.getBoundingClientRect();
+    if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom && chip.dataset.key !== draggedKey) {
+      chip.classList.add('drag-over');
+      touchCurrentChip = chip;
+    }
+  });
+}
+
+function onChipTouchEnd(e) {
+  if (touchDragEl) touchDragEl.classList.remove('dragging');
+  document.querySelectorAll('.qr-chip.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+  if (touchCurrentChip && draggedKey && touchCurrentChip.dataset.key !== draggedKey) {
+    const targetKey = touchCurrentChip.dataset.key;
+    const fromIdx = qrFieldOrder.indexOf(draggedKey);
+    const toIdx = qrFieldOrder.indexOf(targetKey);
+    qrFieldOrder.splice(fromIdx, 1);
+    qrFieldOrder.splice(toIdx, 0, draggedKey);
+    saveQrConfig();
+    renderQrFieldList();
+    updateQrPreview();
+  }
+
+  touchDragEl = null;
+  touchCurrentChip = null;
+  draggedKey = null;
+  document.removeEventListener('touchmove', onChipTouchMove);
+  document.removeEventListener('touchend', onChipTouchEnd);
+}
+
+function updateQrPreview() {
+  const preview = document.getElementById('qr-preview');
+  const textEl = document.getElementById('qr-preview-text');
+  const text = buildQrText();
+  if (text) {
+    textEl.textContent = text;
+    preview.classList.remove('qr-preview-empty');
+  } else {
+    textEl.textContent = 'Выберите поля выше для генерации текста';
+    preview.classList.add('qr-preview-empty');
+  }
 }
 
 function copyQuickResponse() {
   const text = buildQrText();
   if (!text) return;
-  const btn = document.getElementById('qr-copy-btn');
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Скопировано!';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'Копировать';
-      btn.classList.remove('copied');
-    }, 2000);
-  });
+  const icon = document.getElementById('qr-copy-icon');
+  try {
+    navigator.clipboard.writeText(text).then(() => {
+      icon.textContent = '✓';
+      icon.classList.add('copied');
+      setTimeout(() => { icon.textContent = '📋'; icon.classList.remove('copied'); }, 1500);
+    }).catch(() => fallbackCopy(text, icon));
+  } catch(e) { fallbackCopy(text, icon); }
 }
 
+function fallbackCopy(text, icon) {
+  const textEl = document.getElementById('qr-preview-text');
+  const range = document.createRange();
+  range.selectNodeContents(textEl);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  icon.textContent = '✓';
+  icon.classList.add('copied');
+  setTimeout(() => { icon.textContent = '📋'; icon.classList.remove('copied'); }, 3000);
+}
+
+// Init
+loadQrConfig();
+document.getElementById('qr-free-text').value = qrFreeText;
+document.getElementById('qr-expand-bar').classList.toggle('active', qrFieldsExpanded);
+document.getElementById('qr-selected-chips').classList.toggle('expanded', qrFieldsExpanded);
+document.getElementById('qr-free-text-wrap').classList.toggle('expanded', qrFieldsExpanded);
+renderQrFieldList();
 updateQrPreview();
 
 </script>
