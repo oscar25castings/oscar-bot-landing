@@ -74,6 +74,70 @@ body { background: var(--bg); color: var(--text); -webkit-tap-highlight-color: t
   color: var(--text);
 }
 
+/* ========== SUB-TABS (inner Search tab) ========== */
+
+.sub-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sub-tab-btn {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.sub-tab-btn.active {
+  color: var(--gold-text);
+  border-bottom-color: var(--gold-text);
+}
+
+.sub-tab-content {
+  display: none;
+}
+
+.sub-tab-content.active {
+  display: block;
+}
+
+.sub-tab-badge {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(107, 122, 141, 0.2);
+  color: var(--text-muted);
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-left: 4px;
+}
+
+.sub-tab-btn.active .sub-tab-badge {
+  background: rgba(240, 180, 58, 0.15);
+  color: var(--gold-text);
+}
+
+.precision-master-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px 12px;
+}
+
+.precision-master-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
 /* ========== SECTION GROUPS ========== */
 
 .section-group {
@@ -106,9 +170,21 @@ body { background: var(--bg); color: var(--text); -webkit-tap-highlight-color: t
   background: linear-gradient(to right, var(--gold-border), var(--border));
 }
 
+/* Section filter count badge */
+.section-filter-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: #1e2330;
+  border-radius: 8px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 /* Section-level toggle (Больше точности master) */
 .section-group-header .toggle-switch {
-  margin-left: auto;
+  margin-left: 8px;
   flex-shrink: 0;
 }
 
@@ -835,13 +911,14 @@ input:focus { border-color: var(--gold); }
   <!-- ============================================================ -->
   <div class="tab-content active" id="content-search">
 
-    <!-- Section: Больше кастингов -->
+    <!-- Sub-tabs: Кастинги / Точность -->
+    <div class="sub-tab-bar">
+      <button class="sub-tab-btn active" onclick="switchSubTab('castings')">Больше кастингов</button>
+      <button class="sub-tab-btn" onclick="switchSubTab('precision')">Больше точности</button>
+    </div>
+
+    <div class="sub-tab-content active" id="sub-castings">
     <div class="section-group">
-      <div class="section-group-header">
-        <span class="section-group-title">Больше кастингов</span>
-        <span class="section-group-subtitle">базовые фильтры</span>
-        <span class="section-group-line"></span>
-      </div>
     <!-- Card 1 — Основная информация -->
     <div class="dashboard-card" id="card-1">
       <button class="dashboard-card-header" onclick="toggleCard(1)">
@@ -893,15 +970,15 @@ input:focus { border-color: var(--gold); }
       </div>
     </div>
 
-    <!-- Card 2 — Какие кастинги -->
+    <!-- Card 2 — Категории и гонорар -->
     <div class="dashboard-card" id="card-2">
       <button class="dashboard-card-header" onclick="toggleCard(2)">
         <div class="dashboard-card-left">
-          <span>Какие кастинги</span>
+          <span>Категории и гонорар</span>
           <div class="dashboard-card-summary" id="summary-2">
             <span class="summary-chip">12 типов</span>
-            <span class="summary-chip">5 ролей</span>
             <span class="summary-chip">от 3 000&#8381;</span>
+            <span class="summary-chip">Агентские: да</span>
           </div>
         </div>
         <span class="dashboard-card-arrow">&#x25BE;</span>
@@ -974,20 +1051,6 @@ input:focus { border-color: var(--gold); }
         </div>
 
         <div class="onboarding-section">
-          <label class="section-label">Типы ролей</label>
-          <div class="chip-row">
-            <button class="chip active" onclick="this.classList.toggle('active')">Главная</button>
-            <button class="chip active" onclick="this.classList.toggle('active')">Второстепенная</button>
-            <button class="chip active" onclick="this.classList.toggle('active')">Эпизод</button>
-            <button class="chip active" onclick="this.classList.toggle('active')">Массовка</button>
-            <button class="chip active" onclick="this.classList.toggle('active')">Групповка</button>
-            <button class="chip" onclick="this.classList.toggle('active')">Дублер</button>
-            <button class="chip" onclick="this.classList.toggle('active')">Модель</button>
-            <button class="chip" onclick="this.classList.toggle('active')">Фотомодель</button>
-          </div>
-        </div>
-
-        <div class="onboarding-section">
           <label class="section-label">Минимальная ставка (&#8381;)</label>
           <input type="number" value="3000">
           <div class="fee-presets-grid">
@@ -999,6 +1062,9 @@ input:focus { border-color: var(--gold); }
         </div>
 
         <div class="onboarding-section">
+          <div class="toggle-switch-row"><span>Агентские проекты</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
+        </div>
+        <div class="onboarding-section">
           <div class="toggle-switch-row"><span>Оплата по договоренности</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
         </div>
         <div class="onboarding-section">
@@ -1009,15 +1075,115 @@ input:focus { border-color: var(--gold); }
     </div>
 
     </div><!-- /section-group: Больше кастингов -->
+    </div><!-- /sub-tab: castings -->
 
-    <!-- Section: Больше точности -->
+    <div class="sub-tab-content" id="sub-precision">
     <div class="section-group" id="precision-group">
-      <div class="section-group-header">
-        <span class="section-group-title">Больше точности</span>
-        <span class="section-group-subtitle">продвинутые фильтры</span>
-        <button class="toggle-switch on" id="precision-master" onclick="togglePrecisionMaster()"><span class="toggle-switch-slider"></span></button>
-        <span class="section-group-line"></span>
+
+    <!-- Basic cards (duplicated in precision tab for full picture) -->
+    <div class="dashboard-card" id="card-1p">
+      <button class="dashboard-card-header" onclick="toggleCard('1p')">
+        <div class="dashboard-card-left">
+          <span>Основная информация</span>
+          <div class="dashboard-card-summary" id="summary-1p">
+            <span class="summary-chip">Ж</span>
+            <span class="summary-chip">23–31 игр.</span>
+            <span class="summary-chip">Москва и МО</span>
+            <span class="summary-chip">СПб</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-1p" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Пол</label>
+          <div class="gender-pill-row">
+            <button class="gender-pill">Мужской</button>
+            <button class="gender-pill active">Женский</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Игровой возраст</label>
+          <div class="age-range-inputs">
+            <input type="number" value="23"><span class="age-range-dash">&mdash;</span><input type="number" value="31">
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Город поиска</label>
+          <div class="chip-row">
+            <button class="chip active">Москва и МО</button>
+            <button class="chip active">Санкт-Петербург</button>
+            <button class="chip">Екатеринбург</button>
+            <button class="chip">Казань</button>
+            <button class="chip">Все города</button>
+          </div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
       </div>
+    </div>
+
+    <div class="dashboard-card" id="card-2p">
+      <button class="dashboard-card-header" onclick="toggleCard('2p')">
+        <div class="dashboard-card-left">
+          <span>Категории и гонорар</span>
+          <div class="dashboard-card-summary" id="summary-2p">
+            <span class="summary-chip">12 типов</span>
+            <span class="summary-chip">от 3 000&#8381;</span>
+            <span class="summary-chip">Агентские: да</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-2p" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Типы проектов</label>
+          <span style="color:var(--text-muted);font-size:13px">12 типов выбрано</span>
+        </div>
+        <div class="onboarding-section">
+          <label class="section-label">Минимальная ставка</label>
+          <input type="number" value="3000">
+        </div>
+        <div class="onboarding-section">
+          <div class="toggle-switch-row"><span>Агентские проекты</span><button class="toggle-switch on"><span class="toggle-switch-slider"></span></button></div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
+    <!-- Card 4 — Роли и квалификация -->
+    <div class="dashboard-card precision-card" id="card-4">
+      <button class="dashboard-card-header" onclick="toggleCard(4)">
+        <div class="dashboard-card-left">
+          <span>Роли и квалификация</span>
+          <div class="dashboard-card-summary" id="summary-4">
+            <span class="summary-chip">5 ролей</span>
+            <span class="summary-chip">Проф.квалиф: да</span>
+          </div>
+        </div>
+        <span class="dashboard-card-arrow">&#x25BE;</span>
+      </button>
+      <div class="dashboard-card-body" id="body-4" style="display:none">
+        <div class="onboarding-section">
+          <label class="section-label">Типы ролей</label>
+          <div class="chip-row">
+            <button class="chip active" onclick="this.classList.toggle('active')">Главная</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Второстепенная</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Эпизод</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Массовка</button>
+            <button class="chip active" onclick="this.classList.toggle('active')">Групповка</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Дублер</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Каскадёр</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Модель</button>
+            <button class="chip" onclick="this.classList.toggle('active')">Фотомодель</button>
+          </div>
+        </div>
+        <div class="onboarding-section">
+          <div class="toggle-switch-row"><span>Проф. квалификация</span><button class="toggle-switch on" onclick="this.classList.toggle('on')"><span class="toggle-switch-slider"></span></button></div>
+        </div>
+        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
+      </div>
+    </div>
+
     <!-- Card 3 — Внешность и параметры -->
     <div class="dashboard-card precision-card" id="card-3">
       <button class="dashboard-card-header" onclick="toggleCard(3)">
@@ -1125,48 +1291,6 @@ input:focus { border-color: var(--gold); }
       </div>
     </div>
 
-
-    <!-- Card 4 — Агент и квалификация -->
-    <div class="dashboard-card precision-card" id="card-4">
-      <button class="dashboard-card-header" onclick="toggleCard(4)">
-        <div class="dashboard-card-left">
-          <span>Агент и квалификация</span>
-          <div class="dashboard-card-summary" id="summary-4">
-            <span class="summary-chip">Агентские: да</span>
-            <span class="summary-chip">Проф.актёр: да</span>
-          </div>
-        </div>
-        <span class="dashboard-card-arrow">&#x25BE;</span>
-      </button>
-      <div class="dashboard-card-body" id="body-4" style="display:none">
-        <div class="onboarding-section" id="field-show_agent_projects">
-          <div class="filter-toggle-row">
-            <label class="section-label" style="margin-bottom:0">Агентские проекты</label>
-            <button class="filter-toggle on" onclick="toggleFieldFilter('show_agent_projects')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
-          </div>
-          <div class="filter-field-content" id="field-content-show_agent_projects">
-            <div class="gender-pill-row">
-              <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
-              <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Нет</button>
-            </div>
-          </div>
-        </div>
-        <div class="onboarding-section" id="field-allow_prof_actor">
-          <div class="filter-toggle-row">
-            <label class="section-label" style="margin-bottom:0">Кастинги для проф. актёров</label>
-            <button class="filter-toggle on" onclick="toggleFieldFilter('allow_prof_actor')" style="margin-left:8px"><span class="filter-toggle-slider"></span></button>
-          </div>
-          <div class="filter-field-content" id="field-content-allow_prof_actor">
-            <div class="gender-pill-row">
-              <button class="gender-pill active" onclick="this.classList.toggle('active');this.nextElementSibling.classList.remove('active')">Да</button>
-              <button class="gender-pill" onclick="this.classList.toggle('active');this.previousElementSibling.classList.remove('active')">Нет</button>
-            </div>
-          </div>
-        </div>
-        <div class="dashboard-save-row"><button class="save-button">Сохранить</button></div>
-      </div>
-    </div>
-
     <!-- Card 5 — Исключения (стоп-слова) -->
     <div class="dashboard-card precision-card" id="card-5">
       <button class="dashboard-card-header" onclick="toggleCard(5)">
@@ -1200,6 +1324,7 @@ input:focus { border-color: var(--gold); }
     </div>
 
     </div><!-- /section-group: Больше точности -->
+    </div><!-- /sub-tab: precision -->
 
   </div><!-- /content-search -->
 
@@ -1424,6 +1549,28 @@ input:focus { border-color: var(--gold); }
 <script>
 let expandedCard = null;
 let currentTab = 'search';
+let currentSubTab = 'castings';
+
+function switchSubTab(sub) {
+  currentSubTab = sub;
+  document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().startsWith(sub === 'castings' ? 'Больше кастингов' : 'Больше точности'));
+  });
+  document.getElementById('sub-castings').classList.toggle('active', sub === 'castings');
+  document.getElementById('sub-precision').classList.toggle('active', sub === 'precision');
+
+  // Collapse any expanded card
+  if (expandedCard !== null) {
+    const body = document.getElementById('body-' + expandedCard);
+    const card = document.getElementById('card-' + expandedCard);
+    const summary = document.getElementById('summary-' + expandedCard);
+    if (body) body.style.display = 'none';
+    if (card) card.classList.remove('expanded');
+    if (summary) summary.style.display = '';
+    expandedCard = null;
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function switchTab(tab) {
   currentTab = tab;
