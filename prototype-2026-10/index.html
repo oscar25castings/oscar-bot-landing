@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Оскар для актёров</title>
+<meta name="description" content="Бот присылает в Telegram кастинги, которые подходят вам по полу, возрасту, городу и гонорару. Дубли и мошенников отсеиваем, контакты кастинг-директора в каждом кастинге.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: белое поле, одна колонка 1080px из крупных скруглённых плиток (bento), золото — единственный акцент, чёрные «таблетки» для действий */
+:root{
+  --bg:#ffffff;
+  --tile:#ffffff;
+  --sunk:#f5f4f1;
+  --ink:#16140f;
+  --muted:#6f6a61;
+  --line:#e8e5de;
+  --gold:#f2b705;
+  --gold-soft:#fdf3cf;
+  --gold-ink:#1d1704;
+  --btn:#16140f;
+  --btn-ink:#ffffff;
+  --ok:#2f8a4a;
+  --chat:#e7edf3;
+  --bubble:#ffffff;
+  --tg:#2a8bd8;
+  --display:"Onest","Golos Text",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Onest",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r-tile:28px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f0e0c;--tile:#181714;--sunk:#211f1b;--ink:#f3f0e9;--muted:#a49e93;--line:#2c2a25;
+  --gold:#f5c518;--gold-soft:#3a3110;--gold-ink:#1d1704;--btn:#f3f0e9;--btn-ink:#16140f;
+  --ok:#5cc27a;--chat:#1d2630;--bubble:#26303b;--tg:#5aaef0;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f0e0c;--tile:#181714;--sunk:#211f1b;--ink:#f3f0e9;--muted:#a49e93;--line:#2c2a25;
+  --gold:#f5c518;--gold-soft:#3a3110;--gold-ink:#1d1704;--btn:#f3f0e9;--btn-ink:#16140f;
+  --ok:#5cc27a;--chat:#1d2630;--bubble:#26303b;--tg:#5aaef0;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:500 16px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;text-wrap:balance;letter-spacing:-.025em}
+p{margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.stack{display:flex;flex-direction:column;gap:20px;padding-block:20px 48px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:8px}
+
+/* верхняя плашка и шапка */
+.notice{background:var(--gold);color:var(--gold-ink);font-size:14px}
+.notice .wrap{display:flex;gap:12px;align-items:center;justify-content:center;padding-block:9px;flex-wrap:wrap;text-align:center}
+.tag{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--gold-ink);color:var(--gold)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:24px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 19px/1 var(--display);letter-spacing:-.02em}
+.mark{width:34px;height:34px;border-radius:10px;background:var(--ink);display:grid;place-items:center}
+.mark svg{width:20px;height:20px}
+nav.links{display:flex;gap:22px;font-size:14px;color:var(--muted)}
+nav.links a{text-decoration:none}
+nav.links a:hover{color:var(--ink)}
+.top .cta{margin-left:auto}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:99px;font:600 15px/1 var(--body);text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-dark{background:var(--btn);color:var(--btn-ink)}
+.btn-line{background:var(--tile);color:var(--ink);border-color:var(--line)}
+.btn-gold{background:var(--gold);color:var(--gold-ink)}
+.btn-sm{height:38px;padding:0 18px;font-size:14px}
+.btn svg{width:18px;height:18px}
+
+/* плитки */
+.tile{background:var(--tile);border:1px solid var(--line);border-radius:var(--r-tile);padding:36px;min-width:0}
+.tile.sunk{background:var(--sunk);border-color:transparent}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:19px;line-height:1.5;color:var(--muted);max-width:34em}
+.h2{font-size:clamp(28px,4vw,40px);line-height:1.08}
+.h3{font-size:26px;line-height:1.15}
+.sub{color:var(--muted);margin-top:10px;max-width:36em}
+.center{text-align:center}
+.center .sub,.center .lead{margin-inline:auto}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;padding:48px 48px 0;overflow:hidden}
+.hero h1{font-size:clamp(38px,6vw,62px);line-height:1.02;letter-spacing:-.035em}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--gold) 62%,var(--gold) 92%,transparent 92%)}
+.hero .lead{margin-top:20px}
+.hero .actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+.hero .copy{padding-bottom:48px}
+.facts{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap}
+.facts b{display:block;font:600 26px/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.facts span{font-size:13px;color:var(--muted)}
+
+/* телефон с чатом бота */
+.phone{justify-self:center;width:100%;max-width:340px;border-radius:44px 44px 0 0;border:10px solid var(--ink);border-bottom:0;background:var(--chat);padding:14px 12px 0;height:520px;overflow:hidden;position:relative}
+.phone::before{content:"";position:absolute;top:8px;left:50%;width:90px;height:22px;margin-left:-45px;border-radius:99px;background:var(--ink)}
+.chat-head{display:flex;align-items:center;gap:10px;padding:26px 6px 12px}
+.ava{width:36px;height:36px;border-radius:50%;background:var(--ink);display:grid;place-items:center;flex:none}
+.ava svg{width:20px;height:20px}
+.chat-head b{font-size:15px;display:block;line-height:1.2}
+.chat-head span{font-size:12px;color:var(--muted)}
+.msg{background:var(--bubble);border-radius:16px 16px 16px 6px;padding:12px 14px;font-size:13.5px;line-height:1.45;margin-bottom:6px;box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.msg .kind{font-weight:700}
+.msg .row{color:var(--muted)}
+.msg .fee{font-weight:700;color:var(--ok)}
+.msg .contact{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:6px;background:var(--sunk);font:500 12px/1.6 var(--mono);color:var(--muted)}
+.kb{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:6px;margin-bottom:14px}
+.kb span{background:color-mix(in srgb,var(--bubble) 70%,transparent);border-radius:10px;padding:8px 4px;text-align:center;font-size:13px;font-weight:600;color:var(--tg)}
+.kb .soon{position:relative}
+.kb .soon i{font:500 9px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--gold);color:var(--gold-ink);border-radius:99px;padding:2px 5px;margin-left:4px;font-style:normal;vertical-align:2px}
+.msg.dim{opacity:.55}
+
+/* золотая плитка-призыв */
+.callout{background:var(--gold);color:var(--gold-ink);border:0;display:grid;grid-template-columns:1fr 1.1fr;gap:24px;align-items:center;overflow:hidden;position:relative;min-height:300px}
+.callout .art{position:relative;height:100%;min-height:220px}
+.callout .art svg{position:absolute;inset:-40px auto -40px -30px;height:calc(100% + 80px);width:auto;color:var(--gold-ink);opacity:.92}
+.callout h2{font-size:clamp(28px,3.6vw,38px);line-height:1.08}
+.callout p{margin-top:14px;font-size:17px;max-width:30em;opacity:.85}
+.callout .price{margin-top:18px;font:600 20px/1 var(--display)}
+.callout .btn{margin-top:22px;background:var(--gold-ink);color:var(--gold)}
+
+/* фичи */
+.feat{display:flex;flex-direction:column;gap:12px;min-height:380px}
+.feat .sub{margin-top:0}
+.feat .viz{margin-top:auto;padding-top:20px}
+.feat .btn{align-self:flex-start;margin-top:20px}
+.feat.dark{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.feat.dark .sub{color:color-mix(in srgb,var(--bg) 68%,transparent)}
+.feat.dark .btn{background:var(--bg);color:var(--ink)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:8px 14px;font-size:14px;background:var(--sunk);border:1px solid var(--line)}
+.chip.on{background:var(--gold-soft);border-color:color-mix(in srgb,var(--gold) 50%,transparent)}
+.chip.off{text-decoration:line-through;color:var(--muted)}
+.sieve{display:flex;flex-direction:column;gap:8px}
+.sieve div{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:14px;background:var(--sunk);font-size:14px}
+.sieve div b{font:500 12px/1.7 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.sieve div.pass{background:var(--gold-soft)}
+.sieve div.pass b{color:var(--ink)}
+.feat.dark .contacts{display:flex;flex-direction:column;gap:8px}
+.contacts div{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:color-mix(in srgb,var(--bg) 9%,transparent);font-size:14px}
+.contacts svg{width:18px;height:18px;flex:none;color:var(--gold)}
+
+/* контроль + график */
+.control{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:stretch}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-top:24px;padding:0;list-style:none}
+.checks li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.checks svg{width:20px;height:20px;flex:none;color:var(--muted);margin-top:1px}
+.bars{background:var(--gold-soft);border-radius:22px;padding:22px;display:flex;flex-direction:column;min-width:0}
+.bars header{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.bars header span{font-size:13px;color:var(--muted)}
+.bars header b{font:600 28px/1 var(--display);font-variant-numeric:tabular-nums}
+.bar-list{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.bar{display:grid;grid-template-columns:76px 1fr 48px;gap:10px;align-items:center;font-size:13px}
+.bar i{display:block;height:14px;border-radius:99px;background:var(--gold)}
+.bar em{font-style:normal;font-variant-numeric:tabular-nums;text-align:right;font-family:var(--mono);font-size:12px}
+.bars small{margin-top:auto;padding-top:14px;font-size:11.5px;color:var(--muted);line-height:1.4}
+
+/* лента примеров */
+.marquee{overflow:hidden;margin-top:28px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.track{display:flex;gap:12px;width:max-content;animation:roll 48s linear infinite}
+.card-mini{display:flex;flex-direction:column;gap:2px;padding:14px 18px;border-radius:18px;border:1px solid var(--line);background:var(--tile);min-width:220px}
+.card-mini b{font-size:14px}
+.card-mini span{font-size:13px;color:var(--muted)}
+.card-mini em{font-style:normal;font-size:13px;font-weight:600;color:var(--ok)}
+@keyframes roll{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.track{animation:none}.btn{transition:none}}
+
+/* подборки */
+.hubs{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 24px;margin-top:36px;text-align:left}
+.hubs h3{font-size:19px;margin-bottom:10px}
+.hubs ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.hubs a{color:var(--muted);text-decoration:none;font-size:15px}
+.hubs a:hover{color:var(--ink);text-decoration:underline}
+
+/* шаги */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px;list-style:none;padding:0}
+.steps li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.num{width:64px;height:64px;border-radius:20px;background:var(--gold-soft);display:grid;place-items:center;font:600 26px/1 var(--display);color:var(--ink);margin-bottom:6px}
+.steps h3{font-size:18px}
+.steps p{font-size:14px;color:var(--muted)}
+
+/* тарифы */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px;text-align:left}
+.plan{border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:6px;background:var(--tile)}
+.plan header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.plan header b{font:600 22px/1 var(--display)}
+.badge{font-size:12px;padding:5px 10px;border-radius:99px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.plan .amount{font:600 40px/1 var(--display);letter-spacing:-.03em;margin-top:18px;font-variant-numeric:tabular-nums}
+.plan .per{font-size:14px;color:var(--muted)}
+.plan ul{list-style:none;padding:0;margin:18px 0 24px;display:flex;flex-direction:column;gap:9px;font-size:15px}
+.plan li{display:flex;gap:8px}
+.plan li::before{content:"";flex:none;width:16px;height:16px;margin-top:3px;border-radius:50%;background:var(--gold-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.9' fill='none' stroke='%23b38600' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.plan .btn{margin-top:auto;width:100%}
+.plan.best{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.plan.best .per{color:color-mix(in srgb,var(--bg) 65%,transparent)}
+.plan.best .badge{background:var(--gold);color:var(--gold-ink)}
+.plan.best .btn{background:var(--gold);color:var(--gold-ink)}
+.pay{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+.note{font-size:13px;color:var(--muted);margin-top:14px}
+
+/* что такое */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.about div{background:var(--sunk);border-radius:22px;padding:26px}
+.about h3{font-size:19px;margin-bottom:8px}
+.about p{color:var(--muted);font-size:15px}
+
+/* FAQ */
+.faq{max-width:760px;margin:32px auto 0;text-align:left}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:20px 0;font-size:17px;font-weight:600}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:12px;height:12px;margin-top:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(-135deg);margin-top:10px}
+.faq details p{padding:0 0 20px;color:var(--muted);max-width:62ch}
+
+/* гайды */
+.guides{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.guide{display:flex;flex-direction:column;gap:10px;padding:24px;border-radius:22px;background:var(--sunk);text-decoration:none;min-height:210px}
+.guide h3{font-size:19px}
+.guide p{font-size:14px;color:var(--muted)}
+.guide span:last-child{margin-top:auto;font-size:14px;font-weight:600}
+.guide:hover{background:var(--gold-soft)}
+
+/* футер */
+footer.foot .tile{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:28px}
+.foot h4{margin:0 0 12px;font-size:14px;color:var(--muted);font-weight:500}
+.foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.foot ul a{text-decoration:none}
+.legal{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);padding-block:20px 8px}
+.legal nav{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:10px}
+.fill{background:var(--gold-soft);color:var(--ink);padding:0 4px;border-radius:4px}
+
+/* адаптив */
+@media (max-width:900px){
+  nav.links{display:none}
+  .hero{grid-template-columns:1fr;padding:36px 28px 0}
+  .hero .copy{padding-bottom:8px}
+  .callout,.control,.grid2{grid-template-columns:1fr}
+  .callout .art{min-height:150px;order:-1}
+  .callout .art svg{inset:-30px auto auto -10px;height:220px}
+  .steps{grid-template-columns:1fr 1fr;gap:28px 16px}
+  .plans{grid-template-columns:1fr}
+  .hubs{grid-template-columns:1fr 1fr}
+  .guides{grid-template-columns:1fr}
+  footer.foot .tile{grid-template-columns:1fr 1fr}
+  .feat{min-height:0}
+}
+@media (max-width:560px){
+  .tile{padding:24px;border-radius:24px}
+  .hero{padding:28px 22px 0}
+  .hero .actions .btn{flex:1 1 100%}
+  .top .cta span.long{display:none}
+  .checks{grid-template-columns:1fr}
+  .about{grid-template-columns:1fr}
+  .hubs{grid-template-columns:1fr}
+  .phone{height:440px}
+  .bar{grid-template-columns:64px 1fr 44px}
+}
+</style>
+</head>
+<body style="margin:0">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="star" viewBox="0 0 24 24"><path d="M12 2.5l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.8l-5.8 3.5 1.6-6.6L2.6 9.3l6.8-.5z" fill="#f5c518"/></symbol>
+    <symbol id="tg" viewBox="0 0 24 24"><path d="M21.4 4.2L2.9 11.3c-1.2.5-1.2 1.2 0 1.6l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.8-1.5-1.4zM8.6 14l9.7-6.1c.5-.3.9-.1.5.2l-8 7.3-.3 3.3z" fill="currentColor"/></symbol>
+    <symbol id="ck" viewBox="0 0 20 20"><path d="M10 2.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15zm-3 7.7l2 2 4.2-4.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="notice"><div class="wrap"><span class="tag">скоро</span><span>«Отклик»: готовый текст отклика под каждый кастинг в один тап</span></div></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="mark"><svg><use href="#star"/></svg></span>Оскар</a>
+    <nav class="links" aria-label="Разделы">
+      <a href="#how">Как работает</a><a href="#plans">Тарифы</a><a href="#faq">Вопросы</a><a href="#guides">Полезное</a>
+    </nav>
+    <a class="btn btn-dark btn-sm cta" href="https://t.me/casting_assist_bot?start=seo_landing" target="_blank" rel="noopener"><svg><use href="#tg"/></svg><span class="long">Открыть в&nbsp;</span>Telegram</a>
+  </div>
+</header>
+
+<main class="wrap stack" id="top">
+
+  <section class="tile hero">
+    <div class="copy">
+      <span class="eyebrow">Бот для актёров · @casting_assist_bot</span>
+      <h1 style="margin-top:14px">Кастинги под ваш профиль <em>в&nbsp;Telegram</em></h1>
+      <p class="lead">Следим за сотнями каналов кастинг-директоров и присылаем только то, что подходит вам по полу, возрасту, городу и гонорару. Дальше вы пишете кастинг-директору напрямую.</p>
+      <div class="actions">
+        <a class="btn btn-dark" href="https://t.me/casting_assist_bot?start=seo_landing" target="_blank" rel="noopener"><svg><use href="#tg"/></svg>Получать кастинги</a>
+        <a class="btn btn-line" href="#how">Как это работает →</a>
+      </div>
+      <div class="facts">
+        <div><b>~175</b><span>кастингов в день по Москве</span></div>
+        <div><b>~20</b><span>в день по Петербургу</span></div>
+        <div><b>~1 400</b><span>актёров уже получают</span></div>
+      </div>
+    </div>
+    <div class="phone" aria-label="Пример сообщения от бота">
+      <div class="chat-head">
+        <span class="ava"><svg><use href="#star"/></svg></span>
+        <div><b>Оскар | Всем кастинги</b><span>бот</span></div>
+      </div>
+      <div class="msg dim"><span class="kind">Реклама · главная роль</span><br><span class="row">Ж, 25–32 · Москва · съёмка 14.11</span></div>
+      <div class="msg">
+        <span class="kind">Сериал · роль: следователь</span><br>
+        <span class="row">М, 35–45 · Москва</span><br>
+        <span class="row">Съёмка: 12.11, одна смена</span><br>
+        <span class="fee">Гонорар от 15 000 ₽</span><br>
+        <span class="row">Прислать: фото фас/профиль, видеовизитку</span><br>
+        <span class="contact">контакт кастинг-директора</span>
+      </div>
+      <div class="kb"><span>👍</span><span>👎</span><span class="soon">Отклик<i>скоро</i></span></div>
+      <div class="msg"><span class="kind">Полный метр · эпизод</span><br><span class="row">М, 30–50 · Москва · проба 10.11</span><br><span class="fee">от 8 000 ₽</span></div>
+    </div>
+  </section>
+
+  <section class="tile callout">
+    <div class="art" aria-hidden="true">
+      <svg viewBox="0 0 200 200"><path d="M100 10l24 58 62 4-48 40 15 61-53-33-53 33 15-61-48-40 62-4z" fill="none" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/><circle cx="100" cy="108" r="22" fill="currentColor"/></svg>
+    </div>
+    <div>
+      <h2>Узнавайте о кастинге, пока набор ещё идёт</h2>
+      <p>Кастинг приходит вам через несколько минут после публикации в канале. Первые заявки кастинг-директор смотрит внимательнее всего.</p>
+      <div class="price">от 699 ₽ за 30 дней</div>
+      <a class="btn" href="#plans">Смотреть тарифы</a>
+    </div>
+  </section>
+
+  <section class="grid2" id="features">
+    <div class="tile feat">
+      <h3 class="h3">Подбираем по профилю</h3>
+      <p class="sub">Заполняете анкету один раз в мини-приложении бота. Дальше приходят только кастинги, куда вас могут взять.</p>
+      <div class="viz chips">
+        <span class="chip on">Мужчина</span><span class="chip on">38 лет</span><span class="chip on">Москва</span><span class="chip on">рост 182</span><span class="chip on">от 5 000 ₽</span><span class="chip">сериал</span><span class="chip">реклама</span><span class="chip">кино</span><span class="chip off">массовка</span>
+      </div>
+      <a class="btn btn-dark btn-sm" href="https://t.me/casting_assist_bot?start=seo_landing" target="_blank" rel="noopener">Заполнить профиль</a>
+    </div>
+    <div class="tile feat">
+      <h3 class="h3">Отсекаем лишнее</h3>
+      <p class="sub">Один кастинг часто публикуют в десятке каналов. Вы получите его один раз. Платные «школы» и мошеннические объявления не пропускаем.</p>
+      <div class="viz sieve">
+        <div><span>Тот же кастинг в 7 каналах</span><b>дубль</b></div>
+        <div><span>«Кастинг» с оплатой обучения</span><b>скрыт</b></div>
+        <div><span>Ведущий на корпоратив</span><b>не кастинг</b></div>
+        <div class="pass"><span>Сериал, М 35–45, Москва</span><b>вам</b></div>
+      </div>
+    </div>
+    <div class="tile feat dark">
+      <h3 class="h3">Откликаетесь напрямую</h3>
+      <p class="sub">В каждом кастинге есть контакт кастинг-директора. Мы не посредники: заявку вы отправляете сами, без наценок и анкет на сторонних сайтах.</p>
+      <div class="viz contacts">
+        <div><svg><use href="#tg"/></svg>Личка в Telegram</div>
+        <div><svg><use href="#ck"/></svg>Почта или форма заявки</div>
+        <div><svg><use href="#ck"/></svg>Что прислать: фото, видео, размеры</div>
+      </div>
+    </div>
+    <div class="tile feat sunk">
+      <span class="tag" style="align-self:flex-start">скоро</span>
+      <h3 class="h3">«Отклик» в один тап</h3>
+      <p class="sub">Под кастингом появится кнопка «Отклик». Бот соберёт текст из вашего профиля: имя, возраст, рост, ссылки на портфолио и видеовизитку. Вы проверите и отправите сами.</p>
+      <div class="viz msg" style="margin:0">Здравствуйте! По роли следователя в сериале: Иван, 38 лет, рост 182, Москва. Портфолио и видеовизитка по ссылкам ниже. Готов к пробам 12.11.</div>
+    </div>
+  </section>
+
+  <section class="tile control">
+    <div>
+      <h2 class="h2">Настройки под вас</h2>
+      <p class="sub">Профиль и фильтры меняются в мини-приложении бота в любой момент.</p>
+      <ul class="checks">
+        <li><svg><use href="#ck"/></svg>Пол, возраст, рост, город</li>
+        <li><svg><use href="#ck"/></svg>Минимальный гонорар</li>
+        <li><svg><use href="#ck"/></svg>Типы проектов: сериал, кино, реклама, шоу</li>
+        <li><svg><use href="#ck"/></svg>Свои стоп-слова</li>
+        <li><svg><use href="#ck"/></svg>Оценка 👍/👎 под каждым кастингом</li>
+        <li><svg><use href="#ck"/></svg>Пауза, когда заняты на проекте</li>
+      </ul>
+    </div>
+    <div class="bars" role="img" aria-label="Кастинги, отправленные подписчикам за 30 дней, по типам проектов">
+      <header><span>Отправлено актёрам за 30 дней</span><b>6 024</b></header>
+      <div class="bar-list">
+        <div class="bar"><span>Сериал</span><i style="width:100%"></i><em>2 030</em></div>
+        <div class="bar"><span>Реклама</span><i style="width:25%"></i><em>516</em></div>
+        <div class="bar"><span>Кино</span><i style="width:24%"></i><em>492</em></div>
+        <div class="bar"><span>Шоу</span><i style="width:10%"></i><em>197</em></div>
+      </div>
+      <small>Срез на 06.10.2026, все города. Остальное: короткий метр, клипы, фото, театр и другие типы.</small>
+    </div>
+  </section>
+
+  <section class="tile center">
+    <h2 class="h2">Каждый день новые роли</h2>
+    <p class="sub">Так выглядят кастинги в боте. Примеры собраны для страницы, без названий проектов.</p>
+    <div class="marquee" aria-hidden="true">
+      <div class="track">
+        <div class="card-mini"><b>Сериал · врач</b><span>Ж, 40–50 · Москва</span><em>от 12 000 ₽</em></div>
+        <div class="card-mini"><b>Реклама банка</b><span>М, 25–35 · Москва</span><em>от 30 000 ₽</em></div>
+        <div class="card-mini"><b>Полный метр · эпизод</b><span>М, 50–60 · Петербург</span><em>от 7 000 ₽</em></div>
+        <div class="card-mini"><b>Клип · главная роль</b><span>Ж, 20–27 · Москва</span><em>от 10 000 ₽</em></div>
+        <div class="card-mini"><b>Сериал · школьник</b><span>М, 14–16 · Москва</span><em>от 5 000 ₽</em></div>
+        <div class="card-mini"><b>ТВ-шоу · участники</b><span>18–45 · Москва</span><em>по договорённости</em></div>
+        <div class="card-mini"><b>Сериал · врач</b><span>Ж, 40–50 · Москва</span><em>от 12 000 ₽</em></div>
+        <div class="card-mini"><b>Реклама банка</b><span>М, 25–35 · Москва</span><em>от 30 000 ₽</em></div>
+        <div class="card-mini"><b>Полный метр · эпизод</b><span>М, 50–60 · Петербург</span><em>от 7 000 ₽</em></div>
+        <div class="card-mini"><b>Клип · главная роль</b><span>Ж, 20–27 · Москва</span><em>от 10 000 ₽</em></div>
+        <div class="card-mini"><b>Сериал · школьник</b><span>М, 14–16 · Москва</span><em>от 5 000 ₽</em></div>
+        <div class="card-mini"><b>ТВ-шоу · участники</b><span>18–45 · Москва</span><em>по договорённости</em></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile center" id="hubs">
+    <h2 class="h2">Свежие кастинги по разделам</h2>
+    <p class="sub">Подборки обновляются несколько раз в день. Полный текст и контакты — в боте.</p>
+    <div class="hubs">
+      <div><h3>По городу</h3><ul><li><a href="#hubs">Кастинги в Москве</a></li><li><a href="#hubs">Кастинги в Петербурге</a></li><li><a href="#hubs">Массовка в Москве</a></li></ul></div>
+      <div><h3>По проекту</h3><ul><li><a href="#hubs">Кастинг в сериал</a></li><li><a href="#hubs">Кастинг в кино</a></li><li><a href="#hubs">Кастинг в рекламу</a></li><li><a href="#hubs">ТВ-шоу и зрители</a></li></ul></div>
+      <div><h3>Для кого</h3><ul><li><a href="#hubs">Кастинги для актрис</a></li><li><a href="#hubs">Кастинги без опыта</a></li><li><a href="#hubs">Профессиональным актёрам</a></li></ul></div>
+    </div>
+  </section>
+
+  <section class="center" id="how" style="padding-block:28px">
+    <h2 class="h2">Как это работает</h2>
+    <p class="sub">Четыре шага до первого кастинга</p>
+    <ol class="steps">
+      <li><span class="num">1</span><h3>Откройте бота</h3><p>@casting_assist_bot в Telegram, кнопка «Старт»</p></li>
+      <li><span class="num">2</span><h3>Заполните профиль</h3><p>Пол, возраст, город, рост, гонорар и типы проектов</p></li>
+      <li><span class="num">3</span><h3>Получайте кастинги</h3><p>Подходящие приходят в чат в течение дня</p></li>
+      <li><span class="num">4</span><h3>Отправляйте заявку</h3><p>Пишете кастинг-директору по контакту из кастинга</p></li>
+    </ol>
+  </section>
+
+  <section class="tile center" id="plans">
+    <h2 class="h2">Тарифы</h2>
+    <p class="sub">Подписка продлевается автоматически. Отключить можно в боте в любой момент, доступ сохранится до конца оплаченного срока.</p>
+    <div class="plans">
+      <div class="plan">
+        <header><b>30 дней</b><span class="badge">чтобы попробовать</span></header>
+        <div class="amount">699 ₽</div><div class="per">за 30 дней</div>
+        <ul><li>Все кастинги по профилю</li><li>Фильтры и стоп-слова</li><li>Контакты в каждом кастинге</li></ul>
+        <a class="btn btn-dark" href="https://t.me/casting_assist_bot?start=seo_landing" target="_blank" rel="noopener">Начать</a>
+      </div>
+      <div class="plan">
+        <header><b>90 дней</b><span class="badge">−9%</span></header>
+        <div class="amount">1 899 ₽</div><div class="per">633 ₽ в месяц</div>
+        <ul><li>Всё из тарифа «30 дней»</li><li>Хватает на сезон проб</li></ul>
+        <a class="btn btn-dark" href="https://t.me/casting_assist_bot?start=seo_landing" target="_blank" rel="noopener">Начать</a>
+      </div>
+      <div class="plan best">
+        <header><b>Год</b><span class="badge">выгоднее вдвое</span></header>
+        <div class="amount">3 999 ₽</div><div class="per">333 ₽ в месяц</div>
+        <ul><li>Всё из тарифа «30 дней»</li><li>Не нужно продлевать каждый месяц</li></ul>
+        <a class="btn" href="https://t.me/casting_assist_bot?start=seo_landing" target="_blank" rel="noopener">Начать</a>
+      </div>
+    </div>
+    <div class="pay"><span class="chip">Карты МИР, Visa, Mastercard</span><span class="chip">Оплата через CloudPayments</span></div>
+  </section>
+
+  <section class="tile">
+    <h2 class="h2">Что такое Оскар</h2>
+    <p class="sub">Коротко о том, чем бот отличается от каналов с кастингами и сайтов-агрегаторов</p>
+    <div class="about">
+      <div><h3>Кастинги без ручного поиска</h3><p>Кастинги публикуют в сотнях каналов и чатов. Бот читает их за вас и присылает подходящие в один чат.</p></div>
+      <div><h3>Только ваши роли</h3><p>Канал присылает всё подряд. Бот сверяет пол, возраст, город, рост и гонорар с вашим профилем.</p></div>
+      <div><h3>Без дублей и мошенников</h3><p>Повторы одного кастинга склеиваем. Объявления с платой за участие или обучение отсеиваем.</p></div>
+      <div><h3>Мы не агентство</h3><p>Не берём процент с гонорара и не продаём анкеты. Вы общаетесь с кастинг-директором напрямую.</p></div>
+    </div>
+  </section>
+
+  <section class="center" id="faq" style="padding-block:28px">
+    <h2 class="h2">Вопросы</h2>
+    <div class="faq">
+      <details><summary>Откуда берутся кастинги?</summary><p>Из открытых и закрытых Telegram-каналов и чатов, где кастинг-директора и ассистенты публикуют наборы. Бот следит за ними круглосуточно.</p></details>
+      <details><summary>Подойдёт ли без актёрского образования?</summary><p>Да. В профиле можно указать, что опыта нет, и получать кастинги, куда берут без образования: реклама, сериалы, эпизоды, массовка.</p></details>
+      <details><summary>Как бот понимает, что кастинг мне подходит?</summary><p>Нейросеть читает текст кастинга и вытаскивает пол, возраст, город, гонорар и тип проекта. Эти поля сверяются с вашим профилем.</p></details>
+      <details><summary>Сколько кастингов будет приходить?</summary><p>Зависит от профиля и города. В Москве подходящих обычно несколько в день, в других городах меньше. Широкий профиль даёт больше кастингов, узкий точнее.</p></details>
+      <details><summary>Как вы отсеиваете мошенников?</summary><p>Проверяем объявления по стоп-словам и признакам платных «кастингов»: оплата обучения, портфолио, участия. Если кастинг показался подозрительным, напишите в поддержку в боте.</p></details>
+      <details><summary>Вы откликаетесь за меня?</summary><p>Нет. Заявку отправляете вы. Скоро появится «Отклик»: бот подготовит текст, а отправите его вы сами.</p></details>
+      <details><summary>Как отменить подписку?</summary><p>Отключите автопродление в боте. Кастинги будут приходить до конца оплаченного срока.</p></details>
+    </div>
+  </section>
+
+  <section class="tile" id="guides">
+    <h2 class="h2">Полезное для актёров</h2>
+    <div class="guides">
+      <a class="guide" href="#guides"><span class="eyebrow">гайд</span><h3>Как распознать фальшивый кастинг</h3><p>Признаки «кастингов» с оплатой и что спросить до встречи.</p><span>Читать →</span></a>
+      <a class="guide" href="#guides"><span class="eyebrow">гайд</span><h3>Сколько платят в массовке и групповке</h3><p>Ставки за смену в Москве и Петербурге и от чего они зависят.</p><span>Читать →</span></a>
+      <a class="guide" href="#guides"><span class="eyebrow">гайд</span><h3>Видеовизитка за один вечер</h3><p>Что снять, сколько секунд, какой свет и фон.</p><span>Читать →</span></a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap" style="padding-block:0 32px">
+    <div class="tile">
+      <div><a class="logo" href="#top"><span class="mark"><svg><use href="#star"/></svg></span>Оскар</a><p class="note">Кастинги для актёров в Telegram</p></div>
+      <div><h4>Сервис</h4><ul><li><a href="#how">Как работает</a></li><li><a href="#features">Возможности</a></li><li><a href="#plans">Тарифы</a></li><li><a href="#faq">Вопросы</a></li></ul></div>
+      <div><h4>Подборки</h4><ul><li><a href="#hubs">Москва</a></li><li><a href="#hubs">Петербург</a></li><li><a href="#hubs">Массовка</a></li><li><a href="#hubs">Сериалы</a></li></ul></div>
+      <div><h4>Полезное</h4><ul><li><a href="#guides">Фальшивые кастинги</a></li><li><a href="#guides">Ставки в массовке</a></li><li><a href="#guides">Видеовизитка</a></li></ul></div>
+      <div><h4>Помощь</h4><ul><li><a href="https://t.me/casting_assist_bot" target="_blank" rel="noopener">Поддержка в боте</a></li><li><a href="#top">Реквизиты</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>Исполнитель: <span class="fill">ФИО / ИП, ИНН — заполнить</span>. Почта: <span class="fill">заполнить</span></span>
+      <span>Сервис не связан с владельцами каналов, кастинговыми агентствами и киностудиями.</span>
+      <span>© 2026 Оскар. Прототип страницы, не опубликован.</span>
+      <nav><a href="#top">Политика конфиденциальности</a><a href="#top">Оферта</a><a href="#top">Согласие на обработку данных</a><a href="#top">Оплата и возврат</a></nav>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
